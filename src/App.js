@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 
 import './App.css';
-import Login from './Login'
+import Auth from './Auth'
 import Nav from './Nav'
 
 import bootstrap from 'bootstrap'
@@ -17,6 +17,11 @@ function App() {
         // deleteToken={deleteToken}
         />
         <Switch>
+        <Route path='/register'>
+          <Auth 
+            register
+          />
+        </Route>
           {/* <Route exact={true} path="#">
           <Signup saveToken={saveToken} />
         </Route>
