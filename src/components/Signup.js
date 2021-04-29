@@ -1,41 +1,35 @@
 import React, { useState } from 'react'
-import Logo from './logo.png'
-import axios from 'axios'
+import Logo from '../logo.png'
+// import axios from 'axios'
 
-export default function Auth(props) {
-    const [formData, setFormData] = useState({})
+// import { useAuth } from '../utilities/useAuth'
+import { useForm } from '../utilities/useForm'
+import { useAuth } from '../utilities/useAuth'
+import validate from '../utilities/FormValidationRules'
+
+export default function Signup() {
+    const {
+        formData,
+        errors,
+        handleChange,
+        handleSubmit,
+    } = useForm(login, validate);
+
+    function login() {
+        console.log('success')
+    }
+
     
-    const handleChange = (e) => {
-        setFormData(previousState => (
-            {
-                ...previousState,
-                [e.target.name] : e.target.value
-            }
-        ))
+    const {
+        register,
+        token
+    } = useAuth();
 
+    const APIpost = e => {
+        e.preventDefault()
+        const data = { name: 'test', email: 'test@test.com', password: 'changme'};
+        register(data)
     }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (formData.password.length < 8) {
-            console.log('not good enough pal')
-        } else {
-            const apiUrl = 'https://yolo-reece.codeanyapp.com/api/register'
-            axios.post(apiUrl, formData)
-            .then(response => {
-                console.log(response)
-                // save token
-                // useHistory push to Dashboard
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        }
-
-    }
-    console.log(formData)
-    // setup form validation
-    // setup error handling from API
 
     return (
         <div className="LoginBox text-center" >
@@ -44,11 +38,11 @@ export default function Auth(props) {
                 <div className="row d-flex justify-content-center">
                     <div className="col-3 mt-5">
                         <form
-                            onSubmit={handleSubmit}>
+                            onSubmit={handleSubmit } noValidate>
                             <img className="mb-4 rounded" src={Logo} alt="" width="72" height="57" />
                             <h1 className="h3 mb-3 fw-normal">Sign Up for Free</h1>
                             <div className="form-floating">
-                                <input
+                                <input className={errors.name && 'border border-danger'}
                                     name='name'
                                     type="text"
                                     className="form-control"
@@ -61,7 +55,7 @@ export default function Auth(props) {
                                 <label htmlFor="floatingInput">Name</label>
                             </div>
                             <div className="form-floating">
-                                <input
+                                <input className={errors.email && 'border border-danger'}
                                     name='email'
                                     type="email"
                                     className="form-control"
@@ -73,7 +67,7 @@ export default function Auth(props) {
                                 <label htmlFor="floatingInput">Email address</label>
                             </div>
                             <div className="form-floating">
-                                <input
+                                <input className={errors.password && 'border border-danger'}
                                     name='password'
                                     type="password"
                                     className="form-control"

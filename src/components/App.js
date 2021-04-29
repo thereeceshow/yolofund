@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 
 import './App.css';
-import Auth from './Auth'
+import Signup from './Signup'
 import Nav from './Nav'
 
 import bootstrap from 'bootstrap'
@@ -18,7 +18,7 @@ function App() {
         />
         <Switch>
         <Route path='/register'>
-          <Auth 
+          <Signup 
             register
           />
         </Route>
