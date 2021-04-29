@@ -1,7 +1,7 @@
 import React from 'react'
 import Logo from './logo.png'
 
-export default function Login() {
+export default function Login(props) {
     return (
         <div className="LoginBox text-center" >
 
