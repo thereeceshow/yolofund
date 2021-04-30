@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Signup from './Signup'
 import Nav from './Nav'
+import { AuthProvider } from '../utilities/AuthContext'
 
 import bootstrap from 'bootstrap'
 
@@ -11,18 +12,19 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
-        <Nav
-        // token={token}
-        // deleteToken={deleteToken}
-        />
-        <Switch>
-        <Route path='/register'>
-          <Signup 
-            register
+      <AuthProvider>
+        <Router>
+          <Nav
+          // token={token}
+          // deleteToken={deleteToken}
           />
-        </Route>
-          {/* <Route exact={true} path="#">
+          <Switch>
+            <Route path='/register'>
+              <Signup
+                register
+              />
+            </Route>
+            {/* <Route exact={true} path="#">
           <Signup saveToken={saveToken} />
         </Route>
         <Route exact={true} path="#">
@@ -31,9 +33,9 @@ function App() {
         <Route exact={true} path="#">
           <Dash saveToken={saveToken} />
         </Route> */}
-        </Switch>
-      </Router>
-
+          </Switch>
+        </Router>
+      </AuthProvider>
     </div>
   );
 }
