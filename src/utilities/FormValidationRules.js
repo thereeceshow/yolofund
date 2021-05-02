@@ -4,9 +4,7 @@ export default function validate(formData) {
     let errors = {};
     if (!formData.name) {
         errors.name = 'Name is required!';
-    } else if (formData.name === 'Ian') {
-        errors.name = 'Pick a better name!!!'
-    }
+    } 
     if (!formData.email) {
         errors.email = 'Email address is required!';
     }

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Signup from './Signup'
 import Nav from './Nav'
+import About from './About'
 import { AuthProvider } from '../utilities/AuthContext'
 
 import bootstrap from 'bootstrap'
@@ -19,6 +20,9 @@ function App() {
           // deleteToken={deleteToken}
           />
           <Switch>
+            <Route path='/About'>
+              <About />
+            </Route>
             <Route path='/register'>
               <Signup
                 register
