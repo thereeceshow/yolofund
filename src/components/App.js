@@ -36,15 +36,11 @@ function App() {
                 register
               />
             </Route>
-            {/* <Route exact={true} path="#">
-          <Signup saveToken={saveToken} />
-        </Route>
-        <Route exact={true} path="#">
-          <Login saveToken={saveToken} />
-        </Route>
-        <Route exact={true} path="#">
-          <Dash saveToken={saveToken} />
-        </Route> */}
+            <Route path='/signup'>
+              <Signup
+                signup
+              />
+            </Route>
           </Switch>
         </Router>
       </AuthProvider>

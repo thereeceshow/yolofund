@@ -24,9 +24,9 @@ export default function Nav(props) {
                                 <Link to="/register" className="mx-2 btn btn-outline-success">Sign Up</Link>
                             </li>
 
-                            {/* <Link to="/login" className="mx-2 btn btn-outline-success">Login</Link>
+                            <Link to="/login" className="mx-2 btn btn-outline-success">Login</Link>
                     
-                        <button className="btn btn-outline-primary" onClick={logOut}>Log Out</button> */}
+                        {/* <button className="btn btn-outline-primary" onClick={logOut}>Log Out</button> */}
                     </ul>
                 </div>
             </div>
