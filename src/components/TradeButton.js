@@ -30,11 +30,11 @@ export default function TradeButton(props
                     {...getTooltipProps({ className: 'tooltip-container' })}
                 >
                     <div {...getArrowProps({ className: 'tooltip-arrow' })} />
-                    <button>
-                        Buy
+                    <button type="button" className="btn btn-sm rounded-pill btn-primary m-3">
+                        Buy {props.stock}
             </button>
-                    <button>
-                        Sell
+                    <button type="button" className="btn btn-sm rounded-pill btn-primary m-3">
+                        Sell {props.stock}
             </button>
                 </div>
             )}

@@ -1,5 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { axiosHelper } from './axiosHelper'
+import history from './history';
+import { CLIENT_SEC } from '../utilities/api'
+
 
 const AuthContext = createContext({});
 
@@ -29,35 +32,44 @@ export const AuthHelper = () => {
         const APItoken = response.data.data.token || response.data.access_token;
         setToken(APItoken)
         window.localStorage.setItem('token', APItoken);
+        history.replace('/dashboard');
         
     }
 
     function destroyToken() {
         setToken('')
         window.localStorage.removeItem('token');
+        history.replace('/');
     }
 
     function register(regData) {
         axiosHelper({
             data: regData,
             method: 'post',
-            url: '/api/register',
+            url: '/api/auth/register',
             successMethod: saveToken
         })
     }
 
     function login(loginData) {
+        console.log('logging in')
+        loginData.client_id = '2';
+        loginData.client_secret = CLIENT_SEC;
+        loginData.scope = '';
+        loginData.grant_type = 'password';
+        loginData.username = loginData.email;
         axiosHelper({
             data: loginData,
             method: 'post',
-            url: '/oauth/token',
+            url: '/api/auth/login',
             successMethod: saveToken,
         })
     }
 
     function logout() {
+        console.log('loggingout')
         axiosHelper({
-            url: '/api/logout',
+            url: '/api/auth/logout',
             successMethod: destroyToken,
             token
         })

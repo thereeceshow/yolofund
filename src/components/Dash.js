@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import TradeButton from './TradeButton'
 import { API_KEY } from '../utilities/api'
+import { useAuth } from '../utilities/AuthContext'
 
 export default function Dash() {
 
-
+    const {
+        token
+    } = useAuth();
 
     function stockAPI(url) {
         axios({
@@ -91,87 +94,98 @@ export default function Dash() {
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
 
-    return (
-        <div className='row d-flex g-5 mx-5 mt-1 rounded'>
-            <div className='col-8 justify-content-evenly'>
-                <table className="table table-success table-striped table-hover table-bordered border rounded table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Ticker Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Bid</th>
-                            <th scope="col">Ask</th>
-                            <th scope="col">Current Volume</th>
-                            <th scope="col">Prev Close</th>
-                            <th scope="col">Shares</th>
-                            <th scope="col">Value</th>
-                            <th scope="col">Gain/Loss</th>
-                            <th scope="col">Trade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.keys(stocks).sort().map((item, index) => {
-                            return (
-                                <tr key={index}>
-                                    <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
-                                        {stocks[item].sym ? stocks[item].sym : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </a>
-                                    </th>
-                                    <td className={stocks[item].p >= stocks[item].op ? 'text-danger' : 'text-success'} style={{ width: 5 + 'rem' }}>
-                                        {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </td>
-                                    <td style={{ width: 5 + 'rem' }}>
-                                        {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </td>
-                                    <td style={{ width: 5 + 'rem' }}>
-                                        {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </td>
-                                    <td style={{ width: 5 + 'rem' }}>
-                                        {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </td>
-                                    <td style={{ width: 5 + 'rem' }}>
-                                        {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>}
-                                    </td>
-                                    <td>
-                                        {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>} */}
-                                    </td>
-                                    <td>
-                                        {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>} */}
-                                    </td>
-                                    <td>
-                                        {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </div>} */}
-                                    </td>
-
-                                    <td>
-                                        <TradeButton
-                                            id={index}
-                                            stock={stocks[item].sym}
-                                        />
-                                    </td>
+    if (token) {
+        return (
+            <div className="container">
+                <div className='row d-flex g-5 mx-5 mt-1 rounded'>
+                    <h3>Welcome User</h3>
+                    <h5>Available Funds $500,000</h5>
+                    <h5>Account Value - $500,000</h5>
+                </div>
+                <div className='row d-flex g-5 mx-5 mt-1 rounded'>
+                    <div className='col-8 justify-content-evenly text-start'>
+                        <table className="table table-success table-striped table-hover table-bordered border table-responsive table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col" className="px-3">Ticker Name</th>
+                                    <th scope="col" className="px-3">Price</th>
+                                    <th scope="col" className="px-4">Ask</th>
+                                    <th scope="col" className="px-4">Bid</th>
+                                    <th scope="col" className="px-2">Current Volume</th>
+                                    <th scope="col" className="px-4">Prev Close</th>
+                                    <th scope="col" className="px-3">Shares</th>
+                                    <th scope="col" className="px-3">Value</th>
+                                    <th scope="col" className="px-3">Gain/Loss</th>
+                                    <th scope="col" className="px-3">Trade</th>
                                 </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                {Object.keys(stocks).sort().map((item, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
+                                                {stocks[item].sym ? stocks[item].sym : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </a>
+                                            </th>
+                                            <td className={stocks[item].p >= stocks[item].op ? 'text-danger' : 'text-success'} style={{ width: 7 + 'rem' }}>
+                                                {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </td>
+                                            <td style={{ width: 7 + 'rem' }}>
+                                                {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </td>
+                                            <td style={{ width: 5 + 'rem' }}>
+                                                {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </td>
+                                            <td style={{ width: 5 + 'rem' }}>
+                                                {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </td>
+                                            <td style={{ width: 5 + 'rem' }}>
+                                                {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                    <span className="visually-hidden">Loading...</span>
+                                                </div>}
+                                            </td>
+                                            <td>
+                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>} */}
+                                            </td>
+                                            <td>
+                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>} */}
+                                            </td>
+                                            <td>
+                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>} */}
+                                            </td>
+    
+                                            <td>
+                                                <TradeButton
+                                                    id={index}
+                                                    stock={stocks[item].sym}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    )
+        )
+    } else {
+        return <div>Please Signup or Login</div>
+    }
 }

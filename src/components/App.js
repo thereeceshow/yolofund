@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Link, Switch, Route } from 'react-router-dom';
+import { Link, Switch, Route } from 'react-router-dom';
+import history from "../utilities/history";
+import { Router } from 'react-router';
 
 import './App.css';
 import Signup from './Signup'
@@ -16,7 +18,7 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <Router>
+        <Router history={history}>
           <Nav
           // token={token}
           // deleteToken={deleteToken}
@@ -36,9 +38,9 @@ function App() {
                 register
               />
             </Route>
-            <Route path='/signup'>
+            <Route path='/login'>
               <Signup
-                signup
+                login
               />
             </Route>
           </Switch>

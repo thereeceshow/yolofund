@@ -7,19 +7,22 @@ import useForm from '../utilities/useForm'
 import { useAuth } from '../utilities/AuthContext'
 import validate from '../utilities/FormValidationRules'
 
-export default function Signup() {
-    function login() {
+export default function Signup(props) {
+    console.log(props)
+    function signin() {
         console.log('success')
     }
 
     const {
         register,
+        login,
         token
     } = useAuth();
 
     const APIpost = e => {
         // const data = { name: 'test', email: 'test@test.com', password: 'changme'};
-        register(formData)
+        props.register && register(formData);
+        props.login && login(formData)
     }
 
     const {
@@ -27,7 +30,8 @@ export default function Signup() {
         errors,
         handleChange,
         handleSubmit
-    } = useForm(APIpost, validate);
+    } = useForm(APIpost,
+        (fData) => validate(fData, props));
 
     return (
         <div className="LoginBox text-center" >
@@ -38,8 +42,11 @@ export default function Signup() {
                         <form
                             onSubmit={handleSubmit} className="needs-validation" noValidate>
                             <img className="mb-4 rounded" src={Logo} alt="" width="72" height="57" />
-                            <h1 className="h3 mb-3 fw-normal">Sign Up for Free</h1>
-                                <div className="form-floating">
+                            <h1 className="h3 mb-3 fw-normal">
+                                {props.register && "Sign Up for Free"}
+                                {props.login && "Login"}
+                            </h1>
+                                {props.register && <div className="form-floating">
                                     <input className={`form-control ${formData.name && 'is-valid'} ${!!errors.name && 'is-invalid'}`}
                                         name='name'
                                         type="text"
@@ -52,7 +59,7 @@ export default function Signup() {
                                         {errors.name}
                                     </div>
                                     <label htmlFor="floatingInput">Name</label>
-                                </div>
+                                </div>}
                                 <div className="form-floating">
                                     <input className={`form-control ${formData.email && 'is-valid'} ${!!errors.email && 'is-invalid'}`}
                                         name='email'
