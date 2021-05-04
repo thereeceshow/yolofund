@@ -22,6 +22,7 @@ const useForm = (callback, validate) => {
     const handleChange = (e) => {
         e.persist();
         setFormData(formData => ({ ...formData, [e.target.name]: e.target.value }));
+        setErrors(validate(formData));
     };
 
     return {

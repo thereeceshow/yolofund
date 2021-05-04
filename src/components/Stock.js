@@ -1,152 +1,176 @@
-import React, { useState, useEffect } from 'react';
-// import Websocket from 'react-websocket';
-// import { w3cwebsocket as Websocket } from "websocket";
-// const WebSocket = require('ws')
-// import { websocketClient } from "@polygon.io/client-js";
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios'
+// import TradeButton from './TradeButton'
+// import { API_KEY } from '../utilities/api'
 
-// const client = new W3CWebSocket('wss://socket.polygon.io/stocks')
-
+// export default function Dash() {
 
 
 
-export default function Dash() {
+//     function stockAPI(url) {
+//         axios({
+//             method: 'get',
+//             url: 'https://api.polygon.io/' + url,
+//         })
+//             .then(function (response) {
+//                 console.log(response.data)
+//                 setStocks(prevStocks => {
+//                     let stocksCopy = { ...prevStocks }
+//                     stocksCopy[response.data.symbol] = {
+//                         ...stocksCopy[response.data.symbol],
+//                         apiResult: response.data
+//                     }
+//                     return stocksCopy
 
-    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, });
+//                 })
+//                 // return response.data
+//             })
+//             .catch(console.log('error'))
+//     }
 
-    const getWsClient = (url, apiKey) => {
-        if (!apiKey) {
-            throw new Error("api key not provided.");
-        }
+//     const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {},});
 
-        const ws = new WebSocket(url)
+//     const getWsClient = (url, apiKey) => {
+//         if (!apiKey) {
+//             throw new Error("api key not provided.");
+//         }
 
-        ws.onopen = (props) => {
-            ws.send(`{"action":"auth","params":"${apiKey}"}`)
-            // ws.send(`{"action":"subscribe","params":"Q.${props}"}`)
-            const stockParams = Object.keys(stocks).reduce((str, current) => {
-                return str + `Q.${current},A.${current},`
-            }, '')
-            // console.log(stockParams);
-            ws.send(`{"action":"subscribe","params":"${stockParams.slice(0, -1)}"}`)
-            // ws.send(`{"action":"subscribe","params":"Q.*"}`)
-        }
+//         const ws = new WebSocket(url)
 
-        ws.onmessage = (data) => {
-            data = JSON.parse(data.data);
-            setStocks(prevStocks => {
-                let stocksCopy = { ...prevStocks }
-                data.map((msg) => {
-                    if (msg.ev === 'status') {
-                        return console.log('status update - ', msg.message)
-                    }
-                    if (msg && Object.keys(msg).length > 0) {
-                        stocksCopy[msg.sym] = { ...msg, ...stocksCopy[msg.sym] }
-                    }
-                    // stocksCopy[msg.sym] = {...stocksCopy[msg.sym], ...msg}
+//         ws.onopen = (props) => {
+//             ws.send(`{"action":"auth","params":"${apiKey}"}`)
+//             // ws.send(`{"action":"subscribe","params":"Q.${props}"}`)
+//             const stockParams = Object.keys(stocks).reduce((str, current) => {
+//                 return str + `T.${current},Q.${current},A.${current},`
+//             }, '')
+//             // console.log(stockParams);
+//             ws.send(`{"action":"subscribe","params":"${stockParams.slice(0, -1)}"}`)
+//             // ws.send(`{"action":"subscribe","params":"Q.*"}`)
+//         }
 
-                })
-                return stocksCopy;
+//         ws.onmessage = (data) => {
+//             data = JSON.parse(data.data);
+//             setStocks(prevStocks => {
+//                 let stocksCopy = { ...prevStocks }
+//                 data.map((msg) => {
+//                     if (msg.ev === 'status') {
+//                         return console.log('status update - ', msg.message)
+//                     }
+//                     if (msg && Object.keys(msg).length > 0) {
+//                         stocksCopy[msg.sym] = { ...stocksCopy[msg.sym],  ...msg }
+//                     }
+//                     // stocksCopy[msg.sym] = {...stocksCopy[msg.sym], ...msg}
 
-            });
+//                 })
+//                 return stocksCopy;
 
-        }
+//             });
 
-        // ws.onerror(console.log)
+//         }
 
-        return ws;
-    }
+//         return ws;
+//     }
 
-    const getStocksWebsocket = (apiKey, apiBase = 'wss://socket.polygon.io') => {
-        return getWsClient(`${apiBase}/stocks`, apiKey);
-    }
+//     const getStocksWebsocket = (apiKey, apiBase = 'wss://socket.polygon.io') => {
+//         return getWsClient(`${apiBase}/stocks`, apiKey);
+//     }
 
+//     useEffect(() => {
+//         const stockWS = getStocksWebsocket(API_KEY)
+//         Object.keys(stocks).map(item => {
+//             stockAPI('v1/open-close/' + item + '/2020-10-14?unadjusted=true&apiKey=' + API_KEY)
+//         })
+//     }, [])
 
-    // const stocksWS = websocketClient("2KDpwD8dpm0Mv_Q7zdjh5FvLjjb0xObo").getStocksWebsocket();
+//     var formatter = new Intl.NumberFormat('en-US', {
+//         style: 'currency',
+//         currency: 'USD',
+      
+//         // These options are needed to round to whole numbers if that's what you want.
+//         //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+//         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+//       });
 
-    useEffect(() => {
-        const stockWS = getStocksWebsocket('')
-        //     stocksWS.onmessage = raw => {
-        //         const message = JSON.parse(raw);
-        //         switch (message.ev) {
-        //             case "T":
-        //                 // {"action":"subscribe", "params":"Q.MSFT"}
-        //                 console.log(message.ev)
-        //                 break;
-        //         }
-        //     };
-        // client.onopen = () => {
-        //     console.log('websocket client connected')
+//     return (
+//         <div className='row d-flex g-5 mx-5 mt-1 rounded'>
+//             <div className='col-8 justify-content-evenly'>
+//                 <table className="table table-success table-striped table-hover table-bordered border rounded table-sm">
+//                     <thead>
+//                         <tr>
+//                             <th scope="col">Ticker Name</th>
+//                             <th scope="col">Price</th>
+//                             <th scope="col">Bid</th>
+//                             <th scope="col">Ask</th>
+//                             <th scope="col">Current Volume</th>
+//                             <th scope="col">Prev Close</th>
+//                             <th scope="col">Shares</th>
+//                             <th scope="col">Value</th>
+//                             <th scope="col">Gain/Loss</th>
+//                             <th scope="col">Trade</th>
+//                         </tr>
+//                     </thead>
+//                     <tbody>
+//                         {Object.keys(stocks).sort().map((item, index) => {
+//                             return (
+//                                 <tr key={index}>
+//                                     <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
+//                                         {stocks[item].sym ? stocks[item].sym : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </a>
+//                                     </th>
+//                                     <td className={stocks[item].p >= stocks[item].op ? 'text-danger' : 'text-success'} style={{width: 5+'rem'}}>
+//                                         {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </td>
+//                                     <td style={{width: 5+'rem'}}>
+//                                         {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </td>
+//                                     <td style={{width: 5+'rem'}}>
+//                                         {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </td>
+//                                     <td style={{width: 5+'rem'}}>
+//                                         {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </td>
+//                                     <td style={{width: 5+'rem'}}>
+//                                         {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>}
+//                                     </td>
+//                                     <td>
+//                                         {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>} */}
+//                                     </td>
+//                                     <td>
+//                                         {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>} */}
+//                                     </td>
+//                                     <td>
+//                                         {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+//                                             <span className="visually-hidden">Loading...</span>
+//                                         </div>} */}
+//                                     </td>
 
-        // }
-        // client.onmessage = (message) => {
-        //     console.log(message)
-        //     let webSocketResult = message
-        //     const dataFromServer = JSON.parse(message.data);
-        //     setResult(prev => webSocketResult)
-        //     console.log(dataFromServer);
-        //     const authData = {"action":"auth","params":"2KDpwD8dpm0Mv_Q7zdjh5FvLjjb0xObo"}
-        //     client.send(JSON.stringify(authData))
-        //     const testQuote = [
-        //         {"action":"subscribe", "params":"Q.MSFT"},
-        //         {"action":"subscribe", "params":"Q.AAPL"},
-        //         {"action":"subscribe", "params":"Q.GME"},
-        //         {"action":"subscribe", "params":"Q.TSLA"},
-        //         {"action":"subscribe", "params":"Q.VTI"},
-        //     ]
-        //     // client.send(JSON.stringify(testQuote))
-        // }
-
-    }, [])
-
-    // stocksWS.send({ action: "subscribe", params: "T.MSFT" });
-    console.log(stocks)
-
-
-
-    return (
-        <div className='row d-flex g-5 mx-5 mt-1 rounded'>
-            <div className='col-8 justify-content-evenly'>
-                <table className="table table-success table-striped table-hover table-bordered border rounded table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Ticker Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Bid</th>
-                            <th scope="col">Ask</th>
-                            <th scope="col">Current Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.keys(stocks).sort().map((item, index) => {
-                            return (
-                                <tr>
-                                    <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
-                                        {stocks[item].sym}
-                                    </a>
-                                    </th>
-                                    <td>
-                                        ${stocks[item].vw}
-                                    </td>
-                                    <td>
-                                        ${stocks[item].bp}
-                                    </td>
-                                    <td>
-                                        ${stocks[item].ap}
-                                    </td>
-                                    <td>
-                                        {stocks[item].v}
-                                    </td>
-                                </tr>
-
-
-                            )
-
-
-                        })}
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    )
-}
+//                                     <td>
+//                                         <TradeButton 
+//                                             id={index}
+//                                         />
+//                                     </td>
+//                                 </tr>
+//                             )
+//                         })}
+//                     </tbody>
+//                 </table>
+//             </div>
+//         </div>
+//     )
+// }
