@@ -43,7 +43,7 @@ export default function About() {
             <div className="row d-flex justify-content-around text-center text-dark">
                 <div className="col-12 col-lg-5 py-5">
                 <figure>
-                    <blockquote className="blockquote bg-light p-3">
+                    <blockquote className="blockquote bg-light">
                         <p>
                         The point is, ladies and gentlemen, that greed, for lack of a better word, is good. Greed is right. Greed works. Greed clarifies, cuts through, and captures the essence of the evolutionary spirit. Greed, in all of its forms, greed for life, for money, for love, knowledge, has marked the upward surge in mankind and greed, you mark my words, will not only save Teldar paper, but that other malfunctioning corporation called the USA. Thank you very much.
                         </p>

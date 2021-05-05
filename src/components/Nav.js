@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAuth } from '../utilities/AuthContext'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { NavLink, useHistory, useLocation } from 'react-router-dom'
 
 
 export default function Nav(props) {
@@ -35,16 +35,16 @@ export default function Nav(props) {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <Link to="/about" className={`nav-link mx-2 ${location.pathname === '/about' && 'active'}`}>About</Link>
+                            <NavLink to="/about" className='nav-link mx-2' activeClassName='active'>About</NavLink>
                         </li>
                         {token && <li className="nav-item">
-                            <Link to="/dashboard" className={`nav-link mx-2 ${location.pathname === '/dashboard' && 'active'}`}>Dashboard</Link>
+                            <NavLink to="/dashboard" className='nav-link mx-2' activeClassName='active'>Dashboard</NavLink>
                         </li>}
                         {!token && <li className="nav-item">
-                            <Link to="/register" className={`nav-link mx-2 btn btn-outline-success ${location.pathname === '/register' && 'active'}`}>Sign Up</Link>
+                            <NavLink to="/register" className='nav-link mx-2 btn btn-outline-success' activeClassName='active'>Sign Up</NavLink>
                         </li>}
                         {!token && <li className="nav-item">
-                            <Link to="/login" className={`nav-link mx-2 btn btn-outline-success ${location.pathname === '/login' && 'active'}`}>Login</Link>
+                            <NavLink to="/login" className='nav-link mx-2 btn btn-outline-success' activeClassName='active'>Login</NavLink>
                         </li>}
                         {token && <button className="mx-2 btn btn-outline-primary" onClick={logout}>Log Out</button>}
                     </ul>

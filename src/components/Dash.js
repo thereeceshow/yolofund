@@ -3,6 +3,7 @@ import axios from 'axios'
 import TradeButton from './TradeButton'
 import { API_KEY } from '../utilities/api'
 import { useAuth } from '../utilities/AuthContext'
+import { Redirect } from 'react-router-dom'
 
 export default function Dash() {
 
@@ -186,6 +187,6 @@ export default function Dash() {
             </div>
         )
     } else {
-        return <div>Please Signup or Login</div>
+        return <Redirect to = 'login' />
     }
 }

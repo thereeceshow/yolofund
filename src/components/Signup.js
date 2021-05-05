@@ -94,7 +94,7 @@ export default function Signup(props) {
                                     type="submit">
                                     Sign Up
                         </button>
-                                <p className="mt-5 mb-3 text-muted">&copy; 2021</p>
+                                <p className="mt-2 mb-3 text-muted">&copy; 2021</p>
                         </form>
                     </div>
                     </div>

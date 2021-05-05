@@ -28,8 +28,14 @@ export const AuthHelper = () => {
         console.log("success saving data", response.data)
     }
 
-    function saveToken(response) {
-        const APItoken = response.data.data.token || response.data.access_token;
+    function saveToken(res) {
+        let APItoken; // Initalize variable
+        if (res.config.url === "https://yolo-reece.codeanyapp.com/api/auth/register") {
+            APItoken = res.data.data.token
+        } else if (res.config.url === "https://yolo-reece.codeanyapp.com/api/auth/login") {
+            APItoken = res.data.access_token
+        }
+        console.log(res.data);
         setToken(APItoken)
         window.localStorage.setItem('token', APItoken);
         history.replace('/dashboard');
