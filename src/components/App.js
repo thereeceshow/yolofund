@@ -9,9 +9,10 @@ import Nav from './Nav'
 import Dash from './Dash'
 import About from './About'
 import Stock from './Stock'
+import Footer from './Footer'
 import { AuthProvider } from '../utilities/AuthContext'
 
-import bootstrap from 'bootstrap'
+// import bootstrap from 'bootstrap'
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
               />
             </Route>
           </Switch>
+          <Footer />
         </Router>
       </AuthProvider>
     </div>
