@@ -8,36 +8,46 @@ const AuthContext = createContext({});
 
 export const AuthHelper = () => {
     const [token, setToken ] = useState('')
+    const [cash, setCash ] = useState('')
+    const [ gain,  setGain ] = useState('')
 
     useEffect(() => {
         let localToken = window.localStorage.getItem('token');
 
         if (localToken) {
-            // axiosHelper({
-            //     url: '/api/auth/user',
-            //     successMethod: saveUserData,
-            //     failureMethod: destroyToken,
-            //     token: localToken
-            // }
-
             setToken(localToken)
         }
     }, [])
+
+    useEffect(() => {
+        let localCash = window.localStorage.getItem('cash');
+
+        if (localCash) {
+            setCash(localCash)
+        }
+    }, [])
+
+    useEffect(() => {
+        let localGain = window.localStorage.getItem('gain');
+
+        if (localGain) {
+            setGain(localGain)
+        }
+    }, [])
+    
 
     function saveUserData(response) {
         console.log("success saving data", response.data)
     }
 
     function saveToken(res) {
-        let APItoken; // Initalize variable
-        if (res.config.url === "https://yolo-reece.codeanyapp.com/api/auth/register") {
-            APItoken = res.data.data.token
-        } else if (res.config.url === "https://yolo-reece.codeanyapp.com/api/auth/login") {
-            APItoken = res.data.access_token
-        }
-        console.log(res.data);
+        let APItoken = res.data.data.token; // Initalize variable
+        let APIcash = res.data.data.user_data.cash
+        let APIgain = res.data.data.user_data.realized_gain
         setToken(APItoken)
         window.localStorage.setItem('token', APItoken);
+        window.localStorage.setItem('cash', APIcash);
+        window.localStorage.setItem('gain', APIgain);
         history.replace('/dashboard');
         
     }
@@ -45,6 +55,8 @@ export const AuthHelper = () => {
     function destroyToken() {
         setToken('')
         window.localStorage.removeItem('token');
+        window.localStorage.removeItem('cash');
+        window.localStorage.removeItem('gain');
         history.replace('/');
     }
 
@@ -58,7 +70,7 @@ export const AuthHelper = () => {
     }
 
     function login(loginData) {
-        console.log('logging in')
+        console.log('logging in');
         loginData.client_id = '2';
         loginData.client_secret = CLIENT_SEC;
         loginData.scope = '';
@@ -77,11 +89,12 @@ export const AuthHelper = () => {
         axiosHelper({
             url: '/api/auth/logout',
             successMethod: destroyToken,
+            failureMethod: destroyToken,
             token
         })
     }
 
-    return { token, register, login, logout }
+    return { token, cash, gain, register, login, logout }
 }
 
 export const AuthProvider = (props) => {

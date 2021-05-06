@@ -41,7 +41,7 @@ export default function About() {
                 </div>
             </div>
             <div className="row d-flex justify-content-around text-center text-dark">
-                <div className="col-12 col-lg-5 py-5">
+                <div className="col-12 col-lg-5 pt-5">
                 <figure>
                     <blockquote className="blockquote bg-light">
                         <p>

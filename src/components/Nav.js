@@ -13,12 +13,7 @@ export default function Nav(props) {
 
     let history = useHistory();
     let location = useLocation();
-    // let history = useHistory()
-
-    // const logOut = () => {
-
-    // }
-
+    
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid mx-5">

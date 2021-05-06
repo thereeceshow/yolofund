@@ -8,8 +8,27 @@ import { Redirect } from 'react-router-dom'
 export default function Dash() {
 
     const {
-        token
+        token,
+        cash,
+        gain
     } = useAuth();
+
+
+    function yesterday() {
+        let date1 = new Date();
+        let month = "" + (date1.getMonth() + 1);
+        let day = "" + (date1.getDate() - 1);
+        let year = date1.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        console.log([year, month, day].join('-'));
+        return [year, month, day].join('-');
+    }
+
 
     function stockAPI(url) {
         axios({
@@ -18,6 +37,7 @@ export default function Dash() {
         })
             .then(function (response) {
                 console.log(response.data)
+                console.log('POLYGON API CONNECTED')
                 setStocks(prevStocks => {
                     let stocksCopy = { ...prevStocks }
                     stocksCopy[response.data.symbol] = {
@@ -32,7 +52,7 @@ export default function Dash() {
             .catch(console.log('error'))
     }
 
-    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, });
+    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, 'BRK.A': {} });
 
     const getWsClient = (url, apiKey) => {
         if (!apiKey) {
@@ -81,8 +101,9 @@ export default function Dash() {
 
     useEffect(() => {
         const stockWS = getStocksWebsocket(API_KEY)
+        let date = yesterday();
         Object.keys(stocks).map(item => {
-            stockAPI('v1/open-close/' + item + '/2020-10-14?unadjusted=true&apiKey=' + API_KEY)
+            stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY)
         })
     }, [])
 
@@ -100,8 +121,9 @@ export default function Dash() {
             <div className="container">
                 <div className='row d-flex g-5 mx-5 mt-1 rounded'>
                     <h3>Welcome User</h3>
-                    <h5>Available Funds $500,000</h5>
+                    <h5>Available Funds {formatter.format(cash)}</h5>
                     <h5>Account Value - $500,000</h5>
+                    <h5>Realized Gain/Loss <span className={gain < 0 && 'text-red'}>{formatter.format(gain)}</span></h5>
                 </div>
                 <div className='row d-flex g-5 mx-5 mt-1 rounded'>
                     <div className='col-8 justify-content-evenly text-start'>
@@ -130,32 +152,35 @@ export default function Dash() {
                                                 </div>}
                                             </a>
                                             </th>
-                                            <td className={stocks[item].p >= stocks[item].op ? 'text-danger' : 'text-success'} style={{ width: 7 + 'rem' }}>
+                                            <td className={stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 7 + 'rem' }}>
+                                            <td style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 5 + 'rem' }}>
+                                            <td style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 5 + 'rem' }}>
+                                            <td style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 5 + 'rem' }}>
+                                            {/* <td style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
-                                            </td>
+                                            </td> */}
                                             <td>
+                                                {/* {((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 10 / parseFloat(stocks[item].p)).toFixed(2)} */}
+
+                                                {/* {((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)} */}
                                                 {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                 <span className="visually-hidden">Loading...</span>
                                             </div>} */}
@@ -170,7 +195,7 @@ export default function Dash() {
                                                 <span className="visually-hidden">Loading...</span>
                                             </div>} */}
                                             </td>
-    
+
                                             <td>
                                                 <TradeButton
                                                     id={index}
@@ -187,6 +212,6 @@ export default function Dash() {
             </div>
         )
     } else {
-        return <Redirect to = 'login' />
+        return <Redirect to='login' />
     }
 }

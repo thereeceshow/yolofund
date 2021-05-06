@@ -20,10 +20,7 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Router history={history}>
-          <Nav
-          // token={token}
-          // deleteToken={deleteToken}
-          />
+          <Nav />
           <Switch>
             <Route path='/about'>
               <About />
@@ -45,8 +42,8 @@ function App() {
               />
             </Route>
           </Switch>
-          <Footer />
         </Router>
+        <Footer />
       </AuthProvider>
     </div>
   );
