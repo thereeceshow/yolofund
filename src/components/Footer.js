@@ -18,9 +18,9 @@ export default function Footer() {
             <div className="container-fluid">
                 <div className="navbar-collapse justify-content-center" id="navbarText">
                     <ul className="navbar-nav">
-                        {partners.map(el => {
+                        {partners.map((el, index) => {
                             return (
-                                <li className="nav-item">
+                                <li key={index} className="nav-item">
                                     <a className="nav-link" href={el.url}>  {el.name} </a> {el.text}
                                 </li>
                             )

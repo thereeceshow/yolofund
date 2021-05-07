@@ -1,21 +1,21 @@
 import React from 'react'
 
-export default function validate(formData, props) {
+export default function validate(formData, props, isSubmitting) {
     let errors = {};
     // console.log(formData, props)
-    if (!formData.name && props.register) {
+    if (!formData.name && props.register && isSubmitting) {
         errors.name = 'Name is required!';
     } 
-    if (!formData.email) {
+    if (!formData.email && isSubmitting) {
         errors.email = 'Email address is required!';
     }
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    else if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
         errors.email = 'Email address is invalid!';
     }
-    if (!formData.password) {
+    if (!formData.password && isSubmitting) {
         errors.password = 'Password is required!';
     } 
-    else if (formData.password.length < 8) {
+    else if (formData.password && formData.password.length < 8) {
         // console.log(formData.password)
         errors.password = 'Password must be 8 or more characters!'
     }

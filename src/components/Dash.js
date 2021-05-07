@@ -9,9 +9,7 @@ export default function Dash() {
 
     const {
         token,
-        cash,
-        gain,
-        userStocks
+        userData
     } = useAuth();
 
 
@@ -123,10 +121,10 @@ export default function Dash() {
             <div className="container">
                 <div className='row d-flex g-5 mx-5 mt-1 rounded'>
                     <h3>Welcome User</h3>
-                    <h5>Available Funds {formatter.format(cash)}</h5>
+                    <h5>Available Funds {formatter.format(userData.cash)}</h5>
                     <h5>Account Value - $500,000</h5>
-                    <h5>Realized Gain/Loss <span className={gain < 0 && 'text-red'}>{formatter.format(gain)}</span></h5>
-                    <h5>{ userStocks[0].shares }</h5>
+                    <h5>Realized Gain/Loss <span className={userData.gain < 0 && 'text-red'}>{formatter.format(userData.gain)}</span></h5>
+                    <h5>{ userData && userData.stocks[0].shares }</h5>
                 </div>
                 <div className='row d-flex g-1 mx-1 mt-1 rounded'>
                     <div className='col-12 justify-content-evenly text-start table-responsive'>

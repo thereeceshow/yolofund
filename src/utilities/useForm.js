@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 const useForm = (callback, validate) => {
 
@@ -15,16 +16,18 @@ const useForm = (callback, validate) => {
 
     const handleSubmit = (e) => {
         if (e) e.preventDefault();
-        setErrors(validate(formData));
+        setErrors(validate(formData, isSubmitting));
         setIsSubmitting(true);
     };
 
     const handleChange = (e) => {
         e.persist();
-        setFormData(formData => ({...formData, [e.target.name]: e.target.value}),
-            () => setErrors(validate(formData))
-        );
+        setFormData(formData => ({...formData, [e.target.name]: e.target.value}));
     };
+    useDeepCompareEffect(() => {
+        setErrors(validate(formData, isSubmitting))
+        console.log('inthedeep')
+    }, [formData])
 
 return {
     handleChange,

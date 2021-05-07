@@ -30,7 +30,7 @@ export default function Signup(props) {
         handleChange,
         handleSubmit
     } = useForm(APIpost,
-        (fData) => validate(fData, props));
+        (fData, isSubmitting) => validate(fData, props, isSubmitting));
 
     if (token) {
         return <Redirect to = '/dashboard' />
@@ -95,7 +95,8 @@ export default function Signup(props) {
                                     <button
                                         className="w-100 btn btn-lg btn-primary"
                                         type="submit">
-                                        Sign Up
+                                        {props.register && "Sign Up"}
+                                        {props.login && "Login"}
                             </button>
                                     <p className="mt-2 mb-3 text-muted">&copy; 2021</p>
                             </form>

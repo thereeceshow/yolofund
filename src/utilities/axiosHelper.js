@@ -8,14 +8,6 @@ export function axiosHelper(props) {
         token = '',
         successMethod = r => console.log(r),
         failureMethod = e => console.log(e),
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json; charset=utf-8",
-            "Access-Control-Allow-Origin": "*"
-        },
-        withCredentials = true,
-
-
     } = props;
 
     const apiUrl = 'https://yolo-reece.codeanyapp.com'
