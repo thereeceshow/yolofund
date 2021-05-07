@@ -10,6 +10,7 @@ export const AuthHelper = () => {
     const [token, setToken ] = useState('')
     const [cash, setCash ] = useState('')
     const [ gain,  setGain ] = useState('')
+    const [ userStocks,  setUserStocks ] = useState('')
 
     useEffect(() => {
         let localToken = window.localStorage.getItem('token');
@@ -34,6 +35,14 @@ export const AuthHelper = () => {
             setGain(localGain)
         }
     }, [])
+
+    useEffect(() => {
+        let localStocks = JSON.parse(window.localStorage.getItem( 'userStocks' ));
+
+        if (localStocks) {
+            setUserStocks(localStocks)
+        }
+    }, [])
     
 
     function saveUserData(response) {
@@ -44,10 +53,12 @@ export const AuthHelper = () => {
         let APItoken = res.data.data.token; // Initalize variable
         let APIcash = res.data.data.user_data.cash
         let APIgain = res.data.data.user_data.realized_gain
+        let APIstocks = res.data.data.user_data.stocks
         setToken(APItoken)
         window.localStorage.setItem('token', APItoken);
         window.localStorage.setItem('cash', APIcash);
         window.localStorage.setItem('gain', APIgain);
+        window.localStorage.setItem('userStocks', JSON.stringify(APIstocks));
         history.replace('/dashboard');
         
     }
@@ -57,6 +68,7 @@ export const AuthHelper = () => {
         window.localStorage.removeItem('token');
         window.localStorage.removeItem('cash');
         window.localStorage.removeItem('gain');
+        window.localStorage.removeItem('userStocks');
         history.replace('/');
     }
 
@@ -94,7 +106,7 @@ export const AuthHelper = () => {
         })
     }
 
-    return { token, cash, gain, register, login, logout }
+    return { token, cash, gain, userStocks, register, login, logout }
 }
 
 export const AuthProvider = (props) => {

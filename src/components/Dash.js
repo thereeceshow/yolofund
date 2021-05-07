@@ -10,7 +10,8 @@ export default function Dash() {
     const {
         token,
         cash,
-        gain
+        gain,
+        userStocks
     } = useAuth();
 
 
@@ -103,7 +104,8 @@ export default function Dash() {
         const stockWS = getStocksWebsocket(API_KEY)
         let date = yesterday();
         Object.keys(stocks).map(item => {
-            stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY)
+            stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY);
+            // console.log(userStocks)
         })
     }, [])
 
@@ -124,26 +126,31 @@ export default function Dash() {
                     <h5>Available Funds {formatter.format(cash)}</h5>
                     <h5>Account Value - $500,000</h5>
                     <h5>Realized Gain/Loss <span className={gain < 0 && 'text-red'}>{formatter.format(gain)}</span></h5>
+                    <h5>{ userStocks[0].shares }</h5>
                 </div>
-                <div className='row d-flex g-5 mx-5 mt-1 rounded'>
-                    <div className='col-8 justify-content-evenly text-start'>
-                        <table className="table table-success table-striped table-hover table-bordered border table-responsive table-sm">
+                <div className='row d-flex g-1 mx-1 mt-1 rounded'>
+                    <div className='col-12 justify-content-evenly text-start table-responsive'>
+                        <table className="table table-success table-striped table-hover table-bordered border table-sm">
                             <thead>
                                 <tr>
                                     <th scope="col" className="px-3">Ticker Name</th>
                                     <th scope="col" className="px-3">Price</th>
-                                    <th scope="col" className="px-4">Ask</th>
-                                    <th scope="col" className="px-4">Bid</th>
-                                    <th scope="col" className="px-2">Current Volume</th>
-                                    <th scope="col" className="px-4">Prev Close</th>
-                                    <th scope="col" className="px-3">Shares</th>
+                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Ask</th>
+                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Bid</th>
+                                    <th scope="col" className="px-2 d-none d-lg-table-cell">Current Volume</th>
+                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Prev Close</th>
+                                    <th scope="col" className="px-3 d-none d-lg-table-cell">Day Change</th>
+                                    <th scope="col" className="px-2">Shares</th>
                                     <th scope="col" className="px-3">Value</th>
-                                    <th scope="col" className="px-3">Gain/Loss</th>
+                                    <th scope="col" className="px-3 d-none d-lg-table-cell">Gain/Loss</th>
                                     <th scope="col" className="px-3">Trade</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Object.keys(stocks).sort().map((item, index) => {
+                                    {if (stocks[item].apiResult) {
+                                        var change = ((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
+                                    }}
                                     return (
                                         <tr key={index}>
                                             <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
@@ -152,51 +159,59 @@ export default function Dash() {
                                                 </div>}
                                             </a>
                                             </th>
-                                            <td className={stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} style={{ width: 12 + 'rem' }}>
+                                            <td className={stocks[item].apiResult && stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 12 + 'rem' }}>
+                                            <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 12 + 'rem' }}>
+                                            <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            <td style={{ width: 12 + 'rem' }}>
+                                            <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                            {/* <td style={{ width: 12 + 'rem' }}>
+                                            <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
-                                            </td> */}
+                                            </td>
+                                            <td className='d-none d-lg-table-cell'>
+                                                {stocks[item].apiResult && <span className={ change < 0 ? 'text-danger' : 'text-success'}>{change}%</span>}
+                                            </td>
                                             <td>
-                                                {/* {((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 10 / parseFloat(stocks[item].p)).toFixed(2)} */}
+                                            Shares
+                                            {/* {Object.values(userStocks).filter(el => { el == stocks[item].sym }).reduce((x, y) => x + y.shares, 0)}
+                                            
+                                            
+                                            {userStocks.forEach(function matchShares(el) {
+                                                let count = 0;
+                                                if (el.ticker_sym === stocks[item].sym) {
+                                                    console.log('true');
+                                                    count += el.shares;
+                                                }
+                                            })} */}
+                                            
+                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>} */}
+                                            </td>
+                                            <td className='d-none d-lg-table-cell'>
+                                            
+                                            </td>
+                                            <td>
+                                                Value
+                                            </td>
 
-                                                {/* {((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)} */}
-                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                            </div>} */}
-                                            </td>
-                                            <td>
-                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                            </div>} */}
-                                            </td>
-                                            <td>
-                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                            </div>} */}
-                                            </td>
-
-                                            <td>
+                                            <td className="text-center">
                                                 <TradeButton
                                                     id={index}
                                                     stock={stocks[item].sym}
