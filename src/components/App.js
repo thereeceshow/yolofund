@@ -16,6 +16,7 @@ import { AuthProvider } from '../utilities/AuthContext'
 
 function App() {
 
+
   return (
     <div className="App">
       <AuthProvider>

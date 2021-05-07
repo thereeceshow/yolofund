@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth } from '../utilities/AuthContext'
 import { NavLink, useHistory, useLocation } from 'react-router-dom'
+import Trade from './Trade'
 
 
 export default function Nav(props) {
@@ -13,7 +14,7 @@ export default function Nav(props) {
 
     let history = useHistory();
     let location = useLocation();
-    
+
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container-fluid mx-5">

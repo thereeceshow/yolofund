@@ -26,7 +26,6 @@ const useForm = (callback, validate) => {
     };
     useDeepCompareEffect(() => {
         setErrors(validate(formData, isSubmitting))
-        console.log('inthedeep')
     }, [formData])
 
 return {

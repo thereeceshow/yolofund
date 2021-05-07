@@ -25,31 +25,6 @@ export const AuthHelper = () => {
         }
     }, [token])
 
-    // useEffect(() => {
-    //     let localCash = window.localStorage.getItem('cash');
-
-    //     if (localCash) {
-    //         setCash(localCash)
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-    //     let localGain = window.localStorage.getItem('gain');
-
-    //     if (localGain) {
-    //         setGain(localGain)
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-    //     let localStocks = JSON.parse(window.localStorage.getItem( 'userStocks' ));
-
-    //     if (localStocks) {
-    //         setUserStocks(localStocks)
-    //     }
-    // }, [])
-    
-
     function saveUserData(res) {
         setUserData(prevData => ({...res.data}))
         console.log("success saving userData", res.data)

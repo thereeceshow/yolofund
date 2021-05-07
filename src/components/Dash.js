@@ -4,6 +4,7 @@ import TradeButton from './TradeButton'
 import { API_KEY } from '../utilities/api'
 import { useAuth } from '../utilities/AuthContext'
 import { Redirect } from 'react-router-dom'
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 export default function Dash() {
 
@@ -24,7 +25,6 @@ export default function Dash() {
         if (day.length < 2)
             day = '0' + day;
 
-        console.log([year, month, day].join('-'));
         return [year, month, day].join('-');
     }
 
@@ -99,13 +99,16 @@ export default function Dash() {
     }
 
     useEffect(() => {
-        const stockWS = getStocksWebsocket(API_KEY)
-        let date = yesterday();
-        Object.keys(stocks).map(item => {
-            stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY);
-            // console.log(userStocks)
-        })
-    }, [])
+        if (Object.keys(stocks).length > 0) {
+            const stockWS = getStocksWebsocket(API_KEY)
+            let date = yesterday();
+            Object.keys(stocks).map(item => {
+                stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY);
+                // console.log(userStocks)
+            })
+
+        }
+    }, [Object.keys(stocks).length])
 
     var formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -123,8 +126,7 @@ export default function Dash() {
                     <h3>Welcome User</h3>
                     <h5>Available Funds {formatter.format(userData.cash)}</h5>
                     <h5>Account Value - $500,000</h5>
-                    <h5>Realized Gain/Loss <span className={userData.gain < 0 && 'text-red'}>{formatter.format(userData.gain)}</span></h5>
-                    <h5>{ userData && userData.stocks[0].shares }</h5>
+                    <h5>Realized Gain/Loss <span className={userData.realized_gain < 0 ? 'text-red' : ""}>{formatter.format(userData.realized_gain)}</span></h5>
                 </div>
                 <div className='row d-flex g-1 mx-1 mt-1 rounded'>
                     <div className='col-12 justify-content-evenly text-start table-responsive'>
@@ -146,9 +148,44 @@ export default function Dash() {
                             </thead>
                             <tbody>
                                 {Object.keys(stocks).sort().map((item, index) => {
-                                    {if (stocks[item].apiResult) {
+                                    if (stocks[item].apiResult) {
                                         var change = ((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
-                                    }}
+                                    }
+                                    if (stocks[item].sym && userData.stocks) { // took off .length for error
+                                        function countShares(counter) {
+                                            for (let i = 0; i < userData.stocks.length; i++) {
+                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
+                                                    counter += userData.stocks[i].shares
+                                                }
+                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
+                                                    counter -= userData.stocks[i].shares
+                                                }
+                                            }
+                                                return counter
+                                        }
+                                        function countGain(counter) {
+                                            let shares = 0
+                                            for (let i = 0; i < userData.stocks.length; i++) {
+                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
+                                                    counter += (userData.stocks[i].transaction_price * userData.stocks[i].shares)
+                                                    shares += userData.stocks[i].shares
+                                                }
+                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
+                                                    {/* counter -= (userData.stocks[i].transaction_price * userData.stocks[i].shares) */}
+                                                    shares -= userData.stocks[i].shares
+                                                }
+                                                if (shares === 0 ){
+                                                    counter = 0
+                                                }
+                                            }
+                                                return counter / shares
+                                        }
+                                        var shares = countShares(0) //
+                                        var cost = countGain(0) // transaction_price
+                                        var value = formatter.format(shares * stocks[item].p)
+                                        var gain = (shares * stocks[item].p) - cost
+                                    }
+
                                     return (
                                         <tr key={index}>
                                             <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
@@ -186,33 +223,23 @@ export default function Dash() {
                                                 {stocks[item].apiResult && <span className={ change < 0 ? 'text-danger' : 'text-success'}>{change}%</span>}
                                             </td>
                                             <td>
-                                            Shares
-                                            {/* {Object.values(userStocks).filter(el => { el == stocks[item].sym }).reduce((x, y) => x + y.shares, 0)}
-                                            
-                                            
-                                            {userStocks.forEach(function matchShares(el) {
-                                                let count = 0;
-                                                if (el.ticker_sym === stocks[item].sym) {
-                                                    console.log('true');
-                                                    count += el.shares;
-                                                }
-                                            })} */}
-                                            
-                                                {/* {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                            </div>} */}
+                                            {shares > 0 ? shares : '-' }
                                             </td>
                                             <td className='d-none d-lg-table-cell'>
-                                            
+                                            {shares > 0 ? value : '-' }
                                             </td>
                                             <td>
-                                                Value
+                                            {shares > 0 ? <span className={ gain < 0 ? 'text-danger' : 'text-success'}>{formatter.format(gain)}</span> : '-'} 
+                                                {/* {formatter.format(gain)} */}
                                             </td>
 
                                             <td className="text-center">
                                                 <TradeButton
                                                     id={index}
                                                     stock={stocks[item].sym}
+                                                    price={formatter.format(stocks[item].p)}
+                                                    shares={shares}
+                                                    cash={userData.cash}
                                                 />
                                             </td>
                                         </tr>
