@@ -29,7 +29,8 @@ export default function TradeButton(props
 
     const {
         trade,
-        token
+        token,
+        userData
     } = useAuth();
 
     const APIpost = e => {
@@ -44,6 +45,8 @@ export default function TradeButton(props
         handleSubmit
     } = useForm(APIpost,
         (fData, isSubmitting) => validate(fData, props, isSubmitting));
+
+
 
 
     return (
@@ -79,7 +82,7 @@ export default function TradeButton(props
                         </div>
                         <div className="modal-body">
                             <form onSumbit={handleSubmit}>
-                                Buy <input type="Shares" id='buy' name='buy' min="1" onChange={handleChange} value={formData.buy}></input> of {props.stock} at {props.price}
+                                Buy <input type="Shares" id='buy' name='buy' min="1" max={userData.cash / props.price} onChange={handleChange} value={formData.buy}></input> of {props.stock} at {props.price}
                             </form>
                         </div>
                         <div className="modal-footer">
@@ -95,12 +98,12 @@ export default function TradeButton(props
                 <div className="modal-dialog modal-fullscreen-md-down">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="SellModalLabel">MRKT ORDER - BUY {props.stock}</h5>
+                            <h5 className="modal-title" id="SellModalLabel">MRKT ORDER - SELL {props.stock}</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <form onSumbit={handleSubmit}>
-                                Buy <input type="Shares" id='buy' name='buy' min="1" onChange={handleChange} value={formData.sell}></input> of {props.stock} at {props.price}
+                                Buy <input type="Shares" id='buy' name='buy' min="1" max={props.shares} onChange={handleChange} value={formData.sell}></input> of {props.stock} at {props.price}
                             </form>
                         </div>
                         <div className="modal-footer">

@@ -30,19 +30,18 @@ export const AuthHelper = () => {
         console.log("success saving userData", res.data)
     }
 
+    function returnError(errorReason) {
+        return errorReason
+    }
+
     function saveToken(res) {
-        let APItoken = res.data.data.token; // Initalize variable
+        let APItoken = res.data.data.token;
         let APIdata = res.data.data.user_data
-        // let APIcash = res.data.data.user_data.cash
-        // let APIgain = res.data.data.user_data.realized_gain
-        // let APIstocks = res.data.data.user_data.stocks
+
         setToken(APItoken)
         setUserData(prevData => ({...APIdata}))
         window.localStorage.setItem('token', APItoken);
-        // window.localStorage.setItem('userData', JSON.stringify(APIdata));
-        // window.localStorage.setItem('cash', APIcash);
-        // window.localStorage.setItem('gain', APIgain);
-        // window.localStorage.setItem('userStocks', JSON.stringify(APIstocks));
+
         history.replace('/dashboard');
         
     }
@@ -51,10 +50,7 @@ export const AuthHelper = () => {
         setToken('')
         setUserData(prevData => ({}));
         window.localStorage.removeItem('token');
-        // window.localStorage.removeItem('userData');
-        // window.localStorage.removeItem('cash');
-        // window.localStorage.removeItem('gain');
-        // window.localStorage.removeItem('userStocks');
+
         history.replace('/');
     }
 
@@ -63,7 +59,8 @@ export const AuthHelper = () => {
             data: regData,
             method: 'post',
             url: '/api/auth/register',
-            successMethod: saveToken
+            successMethod: saveToken,
+            failureMethod: returnError
         })
     }
 
@@ -79,6 +76,7 @@ export const AuthHelper = () => {
             method: 'post',
             url: '/api/auth/login',
             successMethod: saveToken,
+            failureMethod: returnError
         })
     }
 
@@ -96,6 +94,21 @@ export const AuthHelper = () => {
         axiosHelper({
             url: '/api/auth/user',
             successMethod: saveUserData,
+            token
+        })
+    }
+
+    function trade(type, shares, price) {
+        let tradeData = {
+            shares: shares,
+            price: price,
+            buy: type
+        }
+        axiosHelper({
+            url: 'http:test.test.test',
+            data: tradeData,
+            successMethod: 'test',
+            failureMethod: 'test',
             token
         })
     }

@@ -109,6 +109,7 @@ export default function Dash() {
 
         }
     }, [Object.keys(stocks).length])
+    
 
     var formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -119,11 +120,12 @@ export default function Dash() {
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
 
+
     if (token) {
         return (
             <div className="container">
                 <div className='row d-flex g-5 mx-5 mt-1 rounded'>
-                    <h3>Welcome User</h3>
+                    <h3>Welcome {userData.name}</h3>
                     <h5>Available Funds {formatter.format(userData.cash)}</h5>
                     <h5>Account Value - $500,000</h5>
                     <h5>Realized Gain/Loss <span className={userData.realized_gain < 0 ? 'text-red' : ""}>{formatter.format(userData.realized_gain)}</span></h5>

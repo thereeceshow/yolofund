@@ -41,7 +41,7 @@ export default function Signup(props) {
     
                 <main className="form-signin">
                     <div className="row d-flex justify-content-center">
-                        <div className="col-3 mt-5">
+                        <div className="mt-5 col-10 col-lg-6 g-3">
                             <form
                                 onSubmit={handleSubmit} className="needs-validation" noValidate>
                                 <img className="mb-4 rounded" src={Logo} alt="" width="72" height="57" />
