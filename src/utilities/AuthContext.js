@@ -7,8 +7,8 @@ import { CLIENT_SEC } from '../utilities/api'
 const AuthContext = createContext({});
 
 export const AuthHelper = () => {
-    const [token, setToken ] = useState('')
-    const [ userData,  setUserData ] = useState({})
+    const [token, setToken] = useState('')
+    const [userData, setUserData] = useState({})
 
     useEffect(() => {
         let localToken = window.localStorage.getItem('token');
@@ -26,7 +26,7 @@ export const AuthHelper = () => {
     }, [token])
 
     function saveUserData(res) {
-        setUserData(prevData => ({...res.data}))
+        setUserData(prevData => ({ ...res.data }))
         console.log("success saving userData", res.data)
     }
 
@@ -39,11 +39,11 @@ export const AuthHelper = () => {
         let APIdata = res.data.data.user_data
 
         setToken(APItoken)
-        setUserData(prevData => ({...APIdata}))
+        setUserData(prevData => ({ ...APIdata }))
         window.localStorage.setItem('token', APItoken);
 
         history.replace('/dashboard');
-        
+
     }
 
     function destroyToken() {
@@ -98,29 +98,30 @@ export const AuthHelper = () => {
         })
     }
 
-    function trade(type, shares, price) {
-        let tradeData = {
-            shares: shares,
-            price: price,
-            buy: type
-        }
+    function trade(tradeData) {
+        console.log('in the trade')
         axiosHelper({
-            url: 'http:test.test.test',
-            data: tradeData,
+            url: '/api/auth/trade',
+            data: {
+                shares: tradeData.shares,
+                price: tradeData.price,
+                ticker_sym: tradeData.sym,
+                buy: tradeData.buy
+            },
             successMethod: 'test',
-            failureMethod: 'test',
+            // failureMethod: 'test',
             token
         })
     }
 
-    return { token, userData, register, login, logout }
+    return { token, userData, register, login, logout, trade }
 }
 
 export const AuthProvider = (props) => {
 
     const initialContext = AuthHelper()
 
-    return(
+    return (
         <AuthContext.Provider value={initialContext}>
             {props.children}
         </AuthContext.Provider>

@@ -15,9 +15,25 @@ export default function validate(formData, props, isSubmitting) {
     if (!formData.password && isSubmitting) {
         errors.password = 'Password is required!';
     } 
-    else if (formData.password && formData.password.length < 8) {
+    if (formData.password && formData.password.length < 8) {
         // console.log(formData.password)
         errors.password = 'Password must be 8 or more characters!'
     }
+    // if (formData.buy > (props.cash * props.price) && props.trade) {
+    //     // console.log(formData.password)
+    //     errors.buy = 'You cannot buy that many shares'
+    // }
+    if (formData.buy < 0 && props.trade) {
+        // console.log(formData.password)
+        errors.buy = 'You cannot buy negative'
+    }
+    if (formData.sell < 0 && props.trade) {
+        // console.log(formData.password)
+        errors.sell = 'You cannot sell negative shares'
+    }
+    // else if (formData.sell > props.shares && props.trade) {
+    //     // console.log(formData.password)
+    //     errors.sell = 'You do not have shares to sell'
+    // }
     return errors;
 };

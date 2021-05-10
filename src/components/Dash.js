@@ -28,8 +28,24 @@ export default function Dash() {
         return [year, month, day].join('-');
     }
 
+    function marketStatusAPI(url) {
+        axios({
+            method: 'get',
+            url: 'https://api.polygon.io/' + url,
+        })
+            .then(function (response) {
+                console.log(response.data)
+                console.log('GETTING MARKET STATUS...')
+                setStatus(response.data.market)
+                console.log(status)
+                })
+                // return response.data
+            .catch(console.log('error'))
+    }
+
 
     function stockAPI(url) {
+        console.log(url)
         axios({
             method: 'get',
             url: 'https://api.polygon.io/' + url,
@@ -39,10 +55,11 @@ export default function Dash() {
                 console.log('POLYGON API CONNECTED')
                 setStocks(prevStocks => {
                     let stocksCopy = { ...prevStocks }
-                    stocksCopy[response.data.symbol] = {
-                        ...stocksCopy[response.data.symbol],
+                    stocksCopy[response.data.ticker] = {
+                        ...stocksCopy[response.data.ticker],
                         apiResult: response.data
                     }
+                    console.log("in stockapi, like 61: ",stocksCopy[response.data.symbol])
                     return stocksCopy
 
                 })
@@ -51,7 +68,9 @@ export default function Dash() {
             .catch(console.log('error'))
     }
 
-    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, 'BRK.A': {} });
+    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, 'BRK.A': {}, 'MAR': {} });
+
+    const [status, setStatus] = useState([])
 
     const getWsClient = (url, apiKey) => {
         if (!apiKey) {
@@ -103,7 +122,8 @@ export default function Dash() {
             const stockWS = getStocksWebsocket(API_KEY)
             let date = yesterday();
             Object.keys(stocks).map(item => {
-                stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY);
+                stockAPI('v2/aggs/ticker/' + item + '/prev?unadjusted=true&apiKey=' + API_KEY);
+                // stockAPI('v1/open-close/' + item + '/' + date + '?unadjusted=true&apiKey=' + API_KEY);
                 // console.log(userStocks)
             })
 
@@ -120,25 +140,48 @@ export default function Dash() {
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
 
+    const [ currentTime, setCurrentTime ] = useState('')
+
+    useEffect(() => {
+        marketStatusAPI("v1/marketstatus/now?&apiKey=" + API_KEY)
+        setInterval(() => setCurrentTime(p => new Date().toLocaleTimeString()), 1000)
+    }, [])
+
+    useEffect(() => {
+        const time = new Date();
+        if (time.getMinutes() === 0 || time.getMinutes() === 30) {
+            if (time.getSeconds() === 0) {
+                marketStatusAPI("v1/marketstatus/now?&apiKey=" + API_KEY)
+            }
+        }
+        // console.log(currentTime, stocks)
+    }, [currentTime])
+
+
+
+
 
     if (token) {
+
         return (
             <div className="container">
                 <div className='row d-flex g-5 mx-5 mt-1 rounded'>
                     <h3>Welcome {userData.name}</h3>
                     <h5>Available Funds {formatter.format(userData.cash)}</h5>
+                    {/* <h5>Account Value - {formatter.format(accountValue)}</h5> */}
                     <h5>Account Value - $500,000</h5>
                     <h5>Realized Gain/Loss <span className={userData.realized_gain < 0 ? 'text-red' : ""}>{formatter.format(userData.realized_gain)}</span></h5>
+                    <p>Market Status - {status}</p>
                 </div>
-                <div className='row d-flex g-1 mx-1 mt-1 rounded'>
+                <div className={`row d-flex g-1 mx-1 mt-1 rounded ${!status === 'closed' && 'd-none'}`}>
                     <div className='col-12 justify-content-evenly text-start table-responsive'>
                         <table className="table table-success table-striped table-hover table-bordered border table-sm">
                             <thead>
                                 <tr>
                                     <th scope="col" className="px-3">Ticker Name</th>
                                     <th scope="col" className="px-3">Price</th>
-                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Ask</th>
                                     <th scope="col" className="px-4 d-none d-lg-table-cell">Bid</th>
+                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Ask</th>
                                     <th scope="col" className="px-2 d-none d-lg-table-cell">Current Volume</th>
                                     <th scope="col" className="px-4 d-none d-lg-table-cell">Prev Close</th>
                                     <th scope="col" className="px-3 d-none d-lg-table-cell">Day Change</th>
@@ -151,7 +194,7 @@ export default function Dash() {
                             <tbody>
                                 {Object.keys(stocks).sort().map((item, index) => {
                                     if (stocks[item].apiResult) {
-                                        var change = ((parseFloat(stocks[item].apiResult.close) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
+                                        var change = ((parseFloat(stocks[item].apiResult.results[0].c) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
                                     }
                                     if (stocks[item].sym && userData.stocks) { // took off .length for error
                                         function countShares(counter) {
@@ -186,55 +229,67 @@ export default function Dash() {
                                         var cost = countGain(0) // transaction_price
                                         var value = formatter.format(shares * stocks[item].p)
                                         var gain = (shares * stocks[item].p) - cost
-                                    }
 
+                                    }
+                                    {/* console.log(stocks) */}
+                                   
                                     return (
                                         <tr key={index}>
+                                        {/* ---------- TICKER NAME ------------ */}
                                             <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
                                                 {stocks[item].sym ? stocks[item].sym : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </a>
                                             </th>
+                                        {/* ---------- Price ------------ */}
                                             <td className={stocks[item].apiResult && stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
+                                        {/* ----------Bid------------ */}
                                             <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
+                                        {/* ----------Ask------------ */}
                                             <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
+                                        {/* ----------Current Volume------------ */}
                                             <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
                                                 {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
+                                        {/* ----------Prev Close------------ */}
                                             <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
-                                                {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.close) : <div className="spinner-border spinner-border-sm text-success" role="status">
+                                                {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.results[0].c) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
+                                        {/* ----------Day Change------------ */}
                                             <td className='d-none d-lg-table-cell'>
                                                 {stocks[item].apiResult && <span className={ change < 0 ? 'text-danger' : 'text-success'}>{change}%</span>}
                                             </td>
+                                        {/* ----------Shares------------ */}
                                             <td>
                                             {shares > 0 ? shares : '-' }
                                             </td>
+                                        {/* ----------Value------------ */}
                                             <td className='d-none d-lg-table-cell'>
                                             {shares > 0 ? value : '-' }
                                             </td>
+                                        {/* ----------Gain / Loss------------ */}
                                             <td>
                                             {shares > 0 ? <span className={ gain < 0 ? 'text-danger' : 'text-success'}>{formatter.format(gain)}</span> : '-'} 
                                                 {/* {formatter.format(gain)} */}
                                             </td>
-
+                                        {/* ----------Trade Button------------ */}
                                             <td className="text-center">
                                                 <TradeButton
                                                     id={index}
@@ -242,6 +297,7 @@ export default function Dash() {
                                                     price={formatter.format(stocks[item].p)}
                                                     shares={shares}
                                                     cash={userData.cash}
+                                                    trade
                                                 />
                                             </td>
                                         </tr>

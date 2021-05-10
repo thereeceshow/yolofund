@@ -9,8 +9,7 @@ import validate from '../utilities/FormValidationRules'
 
 import Trade from './Trade';
 
-export default function TradeButton(props
-) {
+export default function TradeButton(props) {
     const {
         getArrowProps,
         getTooltipProps,
@@ -34,10 +33,10 @@ export default function TradeButton(props
     } = useAuth();
 
     const APIpost = e => {
-        
+        trade(formData)
 
     }
-
+    
     const {
         formData,
         errors,
@@ -47,8 +46,8 @@ export default function TradeButton(props
         (fData, isSubmitting) => validate(fData, props, isSubmitting));
 
 
-
-
+    // console.log(formData)
+        
     return (
         <>
             <button type="button" className="btn btn-sm rounded-pill btn-success" ref={setTriggerRef}>
@@ -73,7 +72,7 @@ export default function TradeButton(props
 
 
             {/* /// --------- BUY MODAL ------------------ */}
-            <div className="modal fade" id="BuyModal" tabindex="-1" aria-labelledby="BuyModalLabel" aria-hidden="true">
+            <div className="modal fade" id="BuyModal" tabIndex="-1" aria-labelledby="BuyModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-fullscreen-md-down">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -81,20 +80,22 @@ export default function TradeButton(props
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <form onSumbit={handleSubmit}>
-                                Buy <input type="Shares" id='buy' name='buy' min="1" max={userData.cash / props.price} onChange={handleChange} value={formData.buy}></input> of {props.stock} at {props.price}
+                            <form onSubmit={handleSubmit}>
+                            <div className="p-3">Buy <input className={`form-control ${formData.buy && 'is-valid'} ${!!errors.buy && 'is-invalid'}`} type="number" id='buy' name='buy' min="1" max={formData.maxBuy} onChange={handleChange} value={formData.buy}></input> of {props.stock} at {props.price}
+                            <div className="invalid-feedback">{errors.buy}</div>
+                            </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="submit" className="btn btn-primary">Submit Trade</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* /// --------- Sell MODAL ------------------ */}
-            <div className="modal fade" id="SellModal" tabindex="-1" aria-labelledby="SellModalLabel" aria-hidden="true">
+            <div className="modal fade" id="SellModal" tabIndex="-1" aria-labelledby="SellModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-fullscreen-md-down">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -103,12 +104,14 @@ export default function TradeButton(props
                         </div>
                         <div className="modal-body">
                             <form onSumbit={handleSubmit}>
-                                Buy <input type="Shares" id='buy' name='buy' min="1" max={props.shares} onChange={handleChange} value={formData.sell}></input> of {props.stock} at {props.price}
+                            <div className="p-3">Sell <input className={`form-control ${formData.sell && 'is-valid'} ${!!errors.sell && 'is-invalid'}`} type="number" id='buy' name='buy' min="1" max={props.shares} onChange={handleChange} value={formData.sell} required></input> of {props.stock} at {props.price}
+                                <div className="invalid-feedback">{errors.buy}</div>
+                            </div>
                             </form>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Save changes</button>
+                            <button type="submit" className="btn btn-primary">Submit</button>
                         </div>
                     </div>
                 </div>
