@@ -35,7 +35,7 @@ export default function BuyModal(props) {
             method: 'post',
             data: {
                 shares: parseInt(tradeData.buy),
-                transaction_price: parseInt(props.price),
+                transaction_price: parseFloat(props.price),
                 ticker_sym: props.stock,
                 buy: 1
             },

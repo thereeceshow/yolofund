@@ -32,7 +32,7 @@ export default function SellModal(props) {
             url: '/api/auth/trade',
             method: 'post',
             data: {
-                shares: parseInt(tradeData.sell),
+                shares: parseFloat(tradeData.sell),
                 transaction_price: parseInt(props.price),
                 ticker_sym: props.stock,
                 buy: 0

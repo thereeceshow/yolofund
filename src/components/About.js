@@ -1,7 +1,7 @@
 import React from 'react'
 import Dolla from '../dolla.png'
 import Hundos from '../hundos.png'
-import Chart from '../chart.png'
+// import Chart from '../chart.png'
 
 
 export default function About() {

@@ -1,6 +1,9 @@
 import React from 'react'
+import { NavLink, useHistory } from 'react-router-dom'
 
 export default function Footer() {
+
+    let history = useHistory();
 
     const partners = [
         { name: 'Polygon.io', url: 'https://polygon.io/', text: 'Provider of our Real Time Data on the Stock Market' },
@@ -20,8 +23,8 @@ export default function Footer() {
                     <ul className="navbar-nav">
                         {partners.map((el, index) => {
                             return (
-                                <li key={index} className="nav-item">
-                                    <a className="nav-link" href={el.url}>  {el.name} </a> {el.text}
+                                <li key={index} className="nav-item mx-5">
+                                    <NavLink className="nav-link" to={el.url}><strong>{el.name}</strong></NavLink>
                                 </li>
                             )
                         })}
