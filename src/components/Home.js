@@ -1,7 +1,16 @@
 import React from 'react'
 import Clip from '../stockClip.png'
+import { useAuth } from '../utilities/AuthContext'
+import { Link, useHistory } from 'react-router-dom'
 
 export default function Home() {
+
+    const {
+        token
+    } = useAuth();
+
+    let history = useHistory();
+
     return (
         <div className='Home full container-fluid'>
             <div className="row d-flex mt-5">
@@ -14,7 +23,7 @@ export default function Home() {
                     </p>
                     <p>
                         This game was created as a final project for Awesome Inc.  This is the first iteration.
-                        </p>
+                    </p>
                 </div>
                 <div className="col-12 col-lg-4">
                     <img className='img-fluid' src={Clip} />
@@ -29,8 +38,17 @@ export default function Home() {
                     </p>
                 </div>
             </div>
+            {!token && <div className="row d-flex text-center">
+                <div className="col-12 col-md-6">
+                    <Link to="/register" className="mx-2 btn btn-large btn-outline-success m-5 p-5">Signup for a Free Account</Link>
+                </div>
+                <div className="col-12 col-md-6">
+                    <Link to="/login" className=" btn btn-large btn-outline-success m-5 p-5"> Login to an Existing Account </Link>
+                </div>
+
+            </div>}
             <div className="row d-flex mt-5">
-            <div className="col-12 col-lg-4 p-4"></div><div className="col-12 col-lg-4 p-4"></div><div className="col-12 col-lg-4 p-4"></div>
+                <div className="col-12 col-lg-4 p-4"></div><div className="col-12 col-lg-4 p-4"></div><div className="col-12 col-lg-4 p-4"></div>
 
             </div>
         </div>
