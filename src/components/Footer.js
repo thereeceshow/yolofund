@@ -14,7 +14,7 @@ export default function Footer() {
 
     return (
         
-        <nav className="navbar navbar-expand-lg navbar-light bg-light rounded mt-5" id="footer">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light rounded" id="footer">
             <div className="container-fluid">
                 <div className="navbar-collapse justify-content-center" id="navbarText">
                     <ul className="navbar-nav">

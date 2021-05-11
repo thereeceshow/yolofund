@@ -12,7 +12,6 @@ import Stock from './Stock'
 import Footer from './Footer'
 import Home from './Home'
 import { AuthProvider } from '../utilities/AuthContext'
-import { TradeProvider } from '../utilities/TradeContext'
 
 // import bootstrap from 'bootstrap'
 

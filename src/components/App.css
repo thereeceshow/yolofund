@@ -1,7 +1,11 @@
-html, body {
+html {
   height: 100vh;
 }
 
 .App {
   text-align: center;
+}
+
+.full {
+  height: 80vh;
 }

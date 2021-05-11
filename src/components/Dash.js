@@ -8,12 +8,6 @@ import useDeepCompareEffect from 'use-deep-compare-effect'
 
 export default function Dash() {
 
-    const {
-        token,
-        userData
-    } = useAuth();
-
-
     function yesterday() {
         let date1 = new Date();
         let month = "" + (date1.getMonth() + 1);
@@ -38,8 +32,8 @@ export default function Dash() {
                 console.log('GETTING MARKET STATUS...')
                 setStatus(response.data.market)
                 console.log(status)
-                })
-                // return response.data
+            })
+            // return response.data
             .catch(console.log('error'))
     }
 
@@ -59,7 +53,7 @@ export default function Dash() {
                         ...stocksCopy[response.data.ticker],
                         apiResult: response.data
                     }
-                    console.log("in stockapi, like 61: ",stocksCopy[response.data.symbol])
+                    console.log("in stockapi, like 61: ", stocksCopy[response.data.symbol])
                     return stocksCopy
 
                 })
@@ -129,7 +123,7 @@ export default function Dash() {
 
         }
     }, [Object.keys(stocks).length])
-    
+
 
     var formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -140,7 +134,7 @@ export default function Dash() {
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
 
-    const [ currentTime, setCurrentTime ] = useState('')
+    const [currentTime, setCurrentTime] = useState('')
 
     useEffect(() => {
         marketStatusAPI("v1/marketstatus/now?&apiKey=" + API_KEY)
@@ -158,20 +152,107 @@ export default function Dash() {
     }, [currentTime])
 
 
+    function countShares(item) {
+        let counter = 0
+        for (let i = 0; i < userData.stocks.length; i++) {
+            if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
+                counter += userData.stocks[i].shares
+            }
+            if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
+                counter -= userData.stocks[i].shares
+            }
+        }
+        return counter
+    }
+    function countGain(item) {
+        let shares = 0
+        let counter = 0
+        for (let i = 0; i < userData.stocks.length; i++) {
+            if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
+                counter += (userData.stocks[i].transaction_price * userData.stocks[i].shares)
+                shares += userData.stocks[i].shares
+            }
+            if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
+                {/* counter -= (userData.stocks[i].transaction_price * userData.stocks[i].shares) */ }
+                shares -= userData.stocks[i].shares
+            }
+            if (shares === 0) {
+                counter = 0
+            }
+        }
+        return counter / shares
+    }
+
+    const {
+        token,
+        userData
+    } = useAuth();
+
+    const [accountValue, setAccountValue] = useState(0)
+
+    useDeepCompareEffect(() => {
+        if (Object.keys(userData).length > 0) {
+            setAccountValue(userData.cash)
+        }
+    }, [userData])
+
+
+    useDeepCompareEffect(() => {
+        // only change when stock price or # of shares change
+        if (Object.keys(userData).length > 0) {
+
+            setAccountValue(prev => {
+                let newAccountValue = 0;
+                for (let sym of Object.keys(stocks)) {
+                    let shareAmount = countShares(sym)
+                    // let shareAmount = share.shares
+                    let currentPrice = stocks[sym].p
+                    newAccountValue += shareAmount * currentPrice
+                }
+                newAccountValue += userData.cash
+                return newAccountValue
+            })
+        }
+    }, [userData, stocks])
 
 
 
     if (token) {
 
+        // let accountValue = userData.cash
+
         return (
-            <div className="container">
-                <div className='row d-flex g-5 mx-5 mt-1 rounded'>
-                    <h3>Welcome {userData.name}</h3>
-                    <h5>Available Funds {formatter.format(userData.cash)}</h5>
-                    {/* <h5>Account Value - {formatter.format(accountValue)}</h5> */}
-                    <h5>Account Value - $500,000</h5>
-                    <h5>Realized Gain/Loss <span className={userData.realized_gain < 0 ? 'text-red' : ""}>{formatter.format(userData.realized_gain)}</span></h5>
-                    <p>Market Status - {status}</p>
+            <div className="container full">
+                <div className='row d-flex g-3 mx-1 mt-1 rounded text-start'>
+                    <div className="col">
+                        <div className="row">
+                            <h3>Welcome <span className="text-end fw-bold">{userData.name}</span></h3>
+                            <div className="col-6 col-md-3 col-lg-2">
+                                <p>Available Funds:
+                                <br />
+                                Account Value:
+                                <br />
+                                Gain/Loss:
+                                <br />
+                                Market Status:
+                                </p>
+                            </div>
+                            <div className="col-6 col-md-9 col-lg-10">
+                                <p><span className="text-end fw-bold">{formatter.format(userData.cash)}</span>
+                                    <br />
+                                    <span className="text-end fw-bold">{!isNaN(accountValue) ? formatter.format(accountValue) : <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>}</span>
+                                    <br />
+                                    <span className={(accountValue - 500000) < 0 ? 'text-danger text-end fw-bold' : ""}>{!isNaN(accountValue) ? ((accountValue - 500000) / 5000).toFixed(2) + '%' : <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>}</span>
+                                    <br />
+                                    <span className="text-end fw-bold text-capitalize">{status}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className={`row d-flex g-1 mx-1 mt-1 rounded ${status === 'closed' && 'd-none'}`}>
                     <div className='col-12 justify-content-evenly text-start table-responsive'>
@@ -197,99 +278,75 @@ export default function Dash() {
                                         var change = ((parseFloat(stocks[item].apiResult.results[0].c) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
                                     }
                                     if (stocks[item].sym && userData.stocks) { // took off .length for error
-                                        function countShares(counter) {
-                                            for (let i = 0; i < userData.stocks.length; i++) {
-                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
-                                                    counter += userData.stocks[i].shares
-                                                }
-                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
-                                                    counter -= userData.stocks[i].shares
-                                                }
-                                            }
-                                                return counter
-                                        }
-                                        function countGain(counter) {
-                                            let shares = 0
-                                            for (let i = 0; i < userData.stocks.length; i++) {
-                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 1) {
-                                                    counter += (userData.stocks[i].transaction_price * userData.stocks[i].shares)
-                                                    shares += userData.stocks[i].shares
-                                                }
-                                                if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
-                                                    {/* counter -= (userData.stocks[i].transaction_price * userData.stocks[i].shares) */}
-                                                    shares -= userData.stocks[i].shares
-                                                }
-                                                if (shares === 0 ){
-                                                    counter = 0
-                                                }
-                                            }
-                                                return counter / shares
-                                        }
-                                        var shares = countShares(0) //
-                                        var cost = countGain(0) // transaction_price
-                                        var value = formatter.format(shares * stocks[item].p)
+
+                                        var shares = countShares(item) //
+                                        var cost = countGain(item) // transaction_price
+                                        var value = shares * stocks[item].p
                                         var gain = (shares * stocks[item].p) - cost
+                                        {/* setAccountValue(  accountValue + value) */ }
+                                        {/* accountValue += value */ }
+                                        {/* console.log(accountValue) */ }
 
                                     }
-                                    {/* console.log(stocks) */}
-                                   
+                                    {/* console.log(stocks) */ }
+
                                     return (
                                         <tr key={index}>
-                                        {/* ---------- TICKER NAME ------------ */}
+                                            {/* ---------- TICKER NAME ------------ */}
                                             <th scope="row"><a href={`https://finance.yahoo.com/quote/${stocks[item].sym}`} target="_blank">
                                                 {stocks[item].sym ? stocks[item].sym : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </a>
                                             </th>
-                                        {/* ---------- Price ------------ */}
-                                            <td className={stocks[item].apiResult && stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} style={{ width: 12 + 'rem' }}>
+                                            {/* ---------- Price ------------ */}
+                                            <td className={stocks[item].apiResult && stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} >
                                                 {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                        {/* ----------Bid------------ */}
-                                            <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
+                                            {/* ----------Bid------------ */}
+                                            <td className='d-none d-lg-table-cell' >
                                                 {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                        {/* ----------Ask------------ */}
-                                            <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
+                                            {/* ----------Ask------------ */}
+                                            <td className='d-none d-lg-table-cell' >
                                                 {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                        {/* ----------Current Volume------------ */}
-                                            <td className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
+                                            {/* ----------Current Volume------------ */}
+                                            <td className='d-none d-lg-table-cell' >
                                                 {stocks[item].v ? stocks[item].v : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                        {/* ----------Prev Close------------ */}
-                                            <td  className='d-none d-lg-table-cell' style={{ width: 12 + 'rem' }}>
+                                            {/* ----------Prev Close------------ */}
+                                            <td className='d-none d-lg-table-cell' >
                                                 {stocks[item].apiResult ? formatter.format(stocks[item].apiResult.results[0].c) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
-                                        {/* ----------Day Change------------ */}
+                                            {/* ----------Day Change------------ */}
                                             <td className='d-none d-lg-table-cell'>
-                                                {stocks[item].apiResult && <span className={ change < 0 ? 'text-danger' : 'text-success'}>{change}%</span>}
+                                                {stocks[item].apiResult && <span className={change < 0 ? 'text-danger' : 'text-success'}>{!isNaN(change) && change + "%"}</span>}
                                             </td>
-                                        {/* ----------Shares------------ */}
+                                            {/* ----------Shares------------ */}
                                             <td>
-                                            {shares > 0 ? shares : '-' }
+                                                {shares > 0 ? shares : '-'}
                                             </td>
-                                        {/* ----------Value------------ */}
+                                            {/* ----------Value------------ */}
                                             <td className='d-none d-lg-table-cell'>
-                                            {shares > 0 ? value : '-' }
+                                                {shares > 0 ? formatter.format(value) : '-'}
                                             </td>
-                                        {/* ----------Gain / Loss------------ */}
+                                            {/* ----------Gain / Loss------------ */}
                                             <td>
-                                            {shares > 0 ? <span className={ gain < 0 ? 'text-danger' : 'text-success'}>{formatter.format(gain)}</span> : '-'} 
+                                                {shares > 0 ? <span className={gain < 0 ? 'text-danger' : 'text-success'}>{formatter.format(gain)}</span> : '-'}
                                                 {/* {formatter.format(gain)} */}
                                             </td>
-                                        {/* ----------Trade Button------------ */}
+                                            {/* ----------Trade Button------------ */}
                                             <td className="text-center">
                                                 <TradeButton
                                                     id={index}

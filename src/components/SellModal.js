@@ -4,6 +4,7 @@ import { axiosHelper } from '../utilities/axiosHelper'
 
 import useForm from '../utilities/useForm'
 import validate from '../utilities/FormValidationRules'
+import history from '../utilities/history';
 
 export default function SellModal(props) {
     
@@ -21,6 +22,10 @@ export default function SellModal(props) {
         getUser,
     } = useAuth();
 
+    function updateReload() {
+        history.go(0);
+    }
+
     function trade(tradeData) {
         console.log('in the trade')
         axiosHelper({
@@ -32,7 +37,7 @@ export default function SellModal(props) {
                 ticker_sym: props.stock,
                 buy: 0
             },
-            successMethod: getUser,
+            successMethod: updateReload,
             // failureMethod: 'test',
             token
         })

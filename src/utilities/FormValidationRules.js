@@ -35,10 +35,6 @@ export default function validate(formData, props, isSubmitting) {
         // console.log(formData.password)
         errors.sell = 'You do have that many shares'
     }
-    // else if (formData.sell > props.shares && props.trade) {
-    //     // console.log(formData.password)
-    //     errors.sell = 'You do not have shares to sell'
-    // }
-    console.log(errors)
+    
     return errors;
 };

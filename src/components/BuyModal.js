@@ -3,6 +3,8 @@ import { useAuth } from '../utilities/AuthContext'
 import { axiosHelper } from '../utilities/axiosHelper'
 import useForm from '../utilities/useForm'
 import validate from '../utilities/FormValidationRules'
+import history from '../utilities/history';
+
 
 // import formatter from '../utilities/formatter'
 
@@ -22,6 +24,10 @@ export default function BuyModal(props) {
         getUser,
     } = useAuth();
 
+    function updateReload() {
+        history.go(0);
+    }
+
     function trade(tradeData) {
         console.log('in the trade')
         axiosHelper({
@@ -33,11 +39,10 @@ export default function BuyModal(props) {
                 ticker_sym: props.stock,
                 buy: 1
             },
-            successMethod: getUser,
+            successMethod: updateReload,
             // failureMethod: 'test',
             token
         })
-        
     }
 
     const APIpost = e => {
