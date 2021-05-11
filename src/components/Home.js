@@ -19,7 +19,7 @@ export default function Home() {
                         Yolo Funds
                     </h6>
                     <p>
-                        You Only Live Once, so you need to turn your money into more money.  Learn the keys to investing by playing this game.  See your return in real time.  Can you beat the market?  Aim for 8% return.  If you can learn 8% a year, you are on fire, and will be ready for Wall Street soon.
+                        You Only Live Once, so you need to turn your money into more money.  Learn the keys to investing by playing this game.  See your return in real time.  Can you beat the market?  Aim for 8% return.  If you can earn 8% a year, you are on fire, and will be ready for Wall Street soon.
                     </p>
                     <p>
                         This game was created as a final project for Awesome Inc.  This is the first iteration.

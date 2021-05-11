@@ -16,7 +16,7 @@ export default function About() {
                         Welcome to Yolo Funds!!!
                     </h1>
                     <p>
-                        You just landed your dream job, as a hedge fund manager at Silverman-Bahgs.  You're in charge of the new Yolo Fund.  The Yolo Fund is only concerned about making huge gains, and has a very high risk profile, and needs to preform well if you want to keep your job.  So <strong>Bet Big</strong> and win, because if not... you might not last on Wall Street.
+                        You just landed your dream job, as a hedge fund manager at Silverman-Bahgs.  You're in charge of the new Yolo Fund.  The Yolo Fund is only concerned about making huge gains, and has a very high-risk profile, and needs to perform well if you want to keep your job.  So <strong>Bet Big</strong> and win, because if not... you might not last on Wall Street.
                     </p>
                 </div>
             </div>
@@ -33,10 +33,10 @@ export default function About() {
                         Now you are on Wall Street, and you can quickly see that Cash Rules Everything Around You.
                     </h5>
                     <p className='mt-2 pt-2'>
-                        Use real time stock prices and news to make trades.  How well can you play the market? No fees for trading, and unlimited trades each day.
+                        Use real-time stock prices and news to make trades.  How well can you play the market? No fees for trading, and unlimited trades each day.
                     </p>
                     <h6 className='mt-2 pt-2'>
-                        How well can you pick the stocks that will score the biggest returns?  Starting with <em> 500 million dollars </em> how much can you earn?
+                        How well can you pick the stocks that will score the biggest returns?  Starting with <em> $500 million </em> how much can you earn?
                     </h6>
                 </div>
             </div>

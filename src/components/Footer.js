@@ -3,7 +3,7 @@ import React from 'react'
 export default function Footer() {
 
     const partners = [
-        { name: 'Polygon.io', url: 'https://polygon.io/', text: 'Proivder of our Real Time Data on the Stock Market' },
+        { name: 'Polygon.io', url: 'https://polygon.io/', text: 'Provider of our Real Time Data on the Stock Market' },
         { name: 'Sapling: Grow your Money', url: 'https://awesome-sapling.web.app/', text: 'Set Goals to Save, Take Charge of your Finances Today' },
         { name: 'Awesome Inc.', url: 'https://www.awesomeinc.org/', text: 'The Best Web Deb Bootcamp this Side of Mars' },
         { name: 'Reece\'s Blog', url: 'https://reecewalter.com', text: 'Check Out my Other Projects' },
