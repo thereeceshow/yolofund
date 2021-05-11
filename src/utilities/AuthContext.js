@@ -28,6 +28,7 @@ export const AuthHelper = () => {
     function saveUserData(res) {
         setUserData(prevData => ({ ...res.data }))
         console.log("success saving userData", res.data)
+        // history.go(0)
     }
 
     function returnError(errorReason) {
@@ -91,6 +92,7 @@ export const AuthHelper = () => {
     }
 
     function getUser() {
+        console.log('getting User')
         axiosHelper({
             url: '/api/auth/user',
             successMethod: saveUserData,
@@ -98,23 +100,24 @@ export const AuthHelper = () => {
         })
     }
 
-    function trade(tradeData) {
-        console.log('in the trade')
-        axiosHelper({
-            url: '/api/auth/trade',
-            data: {
-                shares: tradeData.shares,
-                price: tradeData.price,
-                ticker_sym: tradeData.sym,
-                buy: tradeData.buy
-            },
-            successMethod: 'test',
-            // failureMethod: 'test',
-            token
-        })
-    }
+    // function trade(tradeData) {
+    //     console.log('in the trade')
+    //     axiosHelper({
+    //         url: '/api/auth/trade',
+    //         method: 'post',
+    //         data: {
+    //             shares: tradeData.shares,
+    //             price: props.price,
+    //             ticker_sym: props.stock,
+    //             buy: tradeData.buy
+    //         },
+    //         successMethod: getUser(),
+    //         // failureMethod: 'test',
+    //         token
+    //     })
+    // }
 
-    return { token, userData, register, login, logout, trade }
+    return { token, userData, register, login, logout }
 }
 
 export const AuthProvider = (props) => {

@@ -68,7 +68,7 @@ export default function Dash() {
             .catch(console.log('error'))
     }
 
-    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, 'BRK.A': {}, 'MAR': {} });
+    const [stocks, setStocks] = useState({ 'AAPL': {}, 'MSFT': {}, 'TSLA': {}, 'GME': {}, 'YETI': {}, 'CVS': {}, 'MAR': {} });
 
     const [status, setStatus] = useState([])
 
@@ -173,7 +173,7 @@ export default function Dash() {
                     <h5>Realized Gain/Loss <span className={userData.realized_gain < 0 ? 'text-red' : ""}>{formatter.format(userData.realized_gain)}</span></h5>
                     <p>Market Status - {status}</p>
                 </div>
-                <div className={`row d-flex g-1 mx-1 mt-1 rounded ${!status === 'closed' && 'd-none'}`}>
+                <div className={`row d-flex g-1 mx-1 mt-1 rounded ${status === 'closed' && 'd-none'}`}>
                     <div className='col-12 justify-content-evenly text-start table-responsive'>
                         <table className="table table-success table-striped table-hover table-bordered border table-sm">
                             <thead>
@@ -294,7 +294,7 @@ export default function Dash() {
                                                 <TradeButton
                                                     id={index}
                                                     stock={stocks[item].sym}
-                                                    price={formatter.format(stocks[item].p)}
+                                                    price={stocks[item].p}
                                                     shares={shares}
                                                     cash={userData.cash}
                                                     trade

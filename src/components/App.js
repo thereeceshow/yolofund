@@ -10,7 +10,9 @@ import Dash from './Dash'
 import About from './About'
 import Stock from './Stock'
 import Footer from './Footer'
+import Home from './Home'
 import { AuthProvider } from '../utilities/AuthContext'
+import { TradeProvider } from '../utilities/TradeContext'
 
 // import bootstrap from 'bootstrap'
 
@@ -23,6 +25,9 @@ function App() {
         <Router history={history}>
           <Nav />
           <Switch>
+            <Route exact path='/'>
+              <Home />
+            </Route>
             <Route path='/about'>
               <About />
             </Route>
