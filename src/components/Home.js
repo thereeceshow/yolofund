@@ -12,7 +12,7 @@ export default function Home() {
     let history = useHistory();
 
     return (
-        <div className='Home full container-fluid'>
+        <div className='Home container-fluid'>
             <div className="row d-flex mt-5">
                 <div className="col-12 col-lg-4 px-4">
                     <h6 className="mt-5">
