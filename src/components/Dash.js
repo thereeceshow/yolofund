@@ -276,7 +276,7 @@ export default function Dash() {
                             <tbody>
                                 {Object.keys(stocks).sort().map((item, index) => {
                                     if (stocks[item].apiResult) {
-                                        var change = ((parseFloat(stocks[item].apiResult.results[0].c) - parseFloat(stocks[item].p)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
+                                        var change = ((parseFloat(stocks[item].p) - parseFloat(stocks[item].apiResult.results[0].c)) * 100 / parseFloat(stocks[item].p)).toFixed(2)
                                     }
                                     if (stocks[item].sym && userData.stocks) { // took off .length for error
 
