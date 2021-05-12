@@ -260,17 +260,17 @@ export default function Dash() {
                         <table className="table table-success table-striped table-hover table-bordered border table-sm">
                             <thead>
                                 <tr>
-                                    <th scope="col" className="px-3">Ticker Name</th>
-                                    <th scope="col" className="px-3">Price</th>
-                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Bid</th>
-                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Ask</th>
-                                    <th scope="col" className="px-2 d-none d-lg-table-cell">Current Volume</th>
-                                    <th scope="col" className="px-4 d-none d-lg-table-cell">Prev Close</th>
-                                    <th scope="col" className="px-3 d-none d-lg-table-cell">Day Change</th>
-                                    <th scope="col" className="px-2">Shares</th>
-                                    <th scope="col" className="px-3">Value</th>
-                                    <th scope="col" className="px-3 d-none d-lg-table-cell">Gain/Loss</th>
-                                    <th scope="col" className="px-3">Trade</th>
+                                    <th scope="col" className="mx-1 px-1">Ticker</th>
+                                    <th scope="col" className="mx-2 px-4">Price</th>
+                                    <th scope="col" className="mx-2 px-5 d-none d-xl-table-cell">Bid</th>
+                                    <th scope="col" className="mx-2 px-5 d-none d-xl-table-cell">Ask</th>
+                                    <th scope="col" className="mx-1 px-3 d-none d-lg-table-cell">Volume</th>
+                                    <th scope="col" className="mx-1 px-3 d-none d-lg-table-cell">Prev Close</th>
+                                    <th scope="col" className="mx-2 px-3 d-none d-lg-table-cell">Day Change</th>
+                                    <th scope="col" className="mx-1 px-3">Shares</th>
+                                    <th scope="col" className="mx-1 px-4 d-none d-lg-table-cell">Value</th>
+                                    <th scope="col" className="mx-1 px-3 d-none d-lg-table-cell">Gain/Loss</th>
+                                    <th scope="col" className="mx-1 px-3">Trade</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -308,13 +308,13 @@ export default function Dash() {
                                                 </div>}
                                             </td>
                                             {/* ----------Bid------------ */}
-                                            <td className='d-none d-lg-table-cell' >
+                                            <td className='d-none d-xl-table-cell' >
                                                 {stocks[item].bp ? formatter.format(stocks[item].bp) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
                                             </td>
                                             {/* ----------Ask------------ */}
-                                            <td className='d-none d-lg-table-cell' >
+                                            <td className='d-none d-xl-table-cell' >
                                                 {stocks[item].ap ? formatter.format(stocks[item].ap) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}
@@ -344,7 +344,7 @@ export default function Dash() {
                                                 {shares > 0 ? formatter.format(value) : '-'}
                                             </td>
                                             {/* ----------Gain / Loss------------ */}
-                                            <td>
+                                            <td className='d-none d-lg-table-cell'>
                                                 {shares > 0 ? <span className={gain < 0 ? 'text-danger' : 'text-success'}>{formatter.format(gain)}</span> : '-'}
                                                 {/* {formatter.format(gain)} */}
                                             </td>
