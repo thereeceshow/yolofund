@@ -174,6 +174,7 @@ export default function Dash() {
             }
             if (userData.stocks[i].ticker_sym == stocks[item].sym && userData.stocks[i].buy == 0) {
                 {/* counter -= (userData.stocks[i].transaction_price * userData.stocks[i].shares) */ }
+                counter -= (userData.stocks[i].transaction_price * userData.stocks[i].shares)
                 shares -= userData.stocks[i].shares
             }
             if (shares === 0) {
@@ -240,12 +241,12 @@ export default function Dash() {
                             <div className="col-6 col-md-9 col-lg-10">
                                 <p><span className="text-end fw-bold">{formatter.format(userData.cash)}</span>
                                     <br />
-                                    <span className="text-end fw-bold">{!isNaN(accountValue) ? formatter.format(accountValue) : <div class="spinner-border spinner-border-sm" role="status">
-                                        <span class="visually-hidden">Loading...</span>
+                                    <span className="text-end fw-bold">{!isNaN(accountValue) ? formatter.format(accountValue) : <div className="spinner-border spinner-border-sm" role="status">
+                                        <span className="visually-hidden">Loading...</span>
                                     </div>}</span>
                                     <br />
-                                    <span className={(accountValue - 500000) < 0 ? 'text-danger text-end fw-bold' : ""}>{!isNaN(accountValue) ? ((accountValue - 500000) / 5000).toFixed(2) + '%' : <div class="spinner-border spinner-border-sm" role="status">
-                                        <span class="visually-hidden">Loading...</span>
+                                    <span className={(accountValue - 500000) < 0 ? 'text-danger text-end fw-bold' : ""}>{!isNaN(accountValue) ? ((accountValue - 500000) / 5000).toFixed(2) + '%' : <div className="spinner-border spinner-border-sm" role="status">
+                                        <span className="visually-hidden">Loading...</span>
                                     </div>}</span>
                                     <br />
                                     <span className="text-end fw-bold text-capitalize">{status}</span>
@@ -282,7 +283,8 @@ export default function Dash() {
                                         var shares = countShares(item) //
                                         var cost = countGain(item) // transaction_price
                                         var value = shares * stocks[item].p
-                                        var gain = (shares * stocks[item].p) - cost
+                                        var gain =  (shares * stocks[item].p) - (cost * shares)
+                                        {/* console.log(item, cost) */}
                                         {/* setAccountValue(  accountValue + value) */ }
                                         {/* accountValue += value */ }
                                         {/* console.log(accountValue) */ }
@@ -300,7 +302,7 @@ export default function Dash() {
                                             </a>
                                             </th>
                                             {/* ---------- Price ------------ */}
-                                            <td className={stocks[item].apiResult && stocks[item].p >= stocks[item].apiResult.close ? 'text-danger' : 'text-success'} >
+                                            <td className={stocks[item].apiResult && stocks[item].p < stocks[item].apiResult.results[0].c ? 'text-danger' : 'text-success'} >
                                                 {stocks[item].p ? formatter.format(stocks[item].p) : <div className="spinner-border spinner-border-sm text-success" role="status">
                                                     <span className="visually-hidden">Loading...</span>
                                                 </div>}

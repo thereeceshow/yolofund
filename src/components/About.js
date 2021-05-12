@@ -36,7 +36,7 @@ export default function About() {
                         Use real-time stock prices and news to make trades.  How well can you play the market? No fees for trading, and unlimited trades each day.
                     </p>
                     <h6 className='mt-2 pt-2'>
-                        How well can you pick the stocks that will score the biggest returns?  Starting with <em> $500 million </em> how much can you earn?
+                        How well can you pick the stocks that will score the biggest returns?  Starting with <em> $500,000 </em> how much can you earn?
                     </h6>
                 </div>
             </div>
